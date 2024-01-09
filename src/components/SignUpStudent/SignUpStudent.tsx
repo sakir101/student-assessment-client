@@ -1,11 +1,8 @@
 "use client";
 
 import { Button, Col, Row, message } from "antd";
-import { useRouter } from "next/navigation";
-import { SubmitHandler } from "react-hook-form";
 import Form from "../Forms/Form";
 import FormInput from "../Forms/FormInput";
-import Link from "next/link";
 import FormSelectField from "../Forms/FormSelectField";
 import { genderOptions } from "@/constant/global";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,19 +13,14 @@ import { useState } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setImageUrl } from "@/redux/slice/imageSlice";
 
-type FormValues = {
-  id: string;
-  password: string;
-};
-
 const SignUpStudent = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const [success, setSuccess] = useState(false);
   const [signUpStudent, { isSuccess, isError, isLoading }] =
     useSignUpStudentMutation();
   const [validation, setValidation] = useState(false);
-  const onSubmit: SubmitHandler<FormValues> = async (values: any) => {
+
+  const onSubmit = async (values: any) => {
     dispatch(setImageUrl(""));
     const obj = { ...values };
     delete obj["confPassword"];
@@ -48,12 +40,14 @@ const SignUpStudent = () => {
       .unwrap()
       .then(() => {
         message.success("Check your email");
+        setValidation(false);
         setSuccess(true);
       })
       .catch((err) => {
         message.error(
           "User Registration Failed! You must provide appropriate university name and email"
         );
+        setSuccess(false);
         setValidation(true);
       })
       .finally(() => {

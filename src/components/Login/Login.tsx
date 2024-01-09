@@ -20,20 +20,21 @@ const LoginPage = () => {
   const [userLogin] = useUserLoginMutation();
   const router = useRouter();
 
-  // console.log(isLoggedIn());
-
   const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
+    const key = "loadingKey";
+    message.loading({ content: "Loading...", key });
     try {
       const res = await userLogin({ ...data }).unwrap();
-      // console.log(res);
       if (res?.accessToken) {
         router.push("/profile");
         message.success("User logged in successfully!");
       }
       storeUserInfo({ accessToken: res?.accessToken });
-      // console.log(res);
+      message.destroy(key);
     } catch (err: any) {
       console.error(err.message);
+      message.success("User logged in fail");
+      message.destroy(key);
     }
   };
 
@@ -86,7 +87,7 @@ const LoginPage = () => {
               }}
             >
               <div style={{ marginLeft: "auto" }}>
-                <Link href="/forgot-password">forgot password?</Link>
+                <Link href="/forget-password">forget password?</Link>
               </div>
             </div>
             <Button type="primary" htmlType="submit">
