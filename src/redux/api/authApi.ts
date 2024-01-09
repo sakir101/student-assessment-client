@@ -1,3 +1,4 @@
+import { tagTypes } from "../tag-types"
 import { baseApi } from "./baseApi"
 
 const Auth_URL = "/auth"
@@ -9,7 +10,7 @@ export const authApi = baseApi.injectEndpoints({
                 method: "POST",
                 data: loginData
             }),
-            invalidatesTags: ["user"]
+            invalidatesTags: [tagTypes.user]
         }),
     }),
 })

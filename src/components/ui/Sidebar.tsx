@@ -5,13 +5,15 @@ import { useState } from "react";
 import type { MenuProps } from "antd";
 import { sidebarItems } from "@/constant/sidebarItems";
 import { USER_ROLE } from "@/constant/role";
+import { getUserInfo } from "@/services/auth.service";
 
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const role = USER_ROLE.SUPER_ADMIN;
+  const { role } = getUserInfo() as any;
+  console.log(role);
   return (
     <Sider
       collapsible

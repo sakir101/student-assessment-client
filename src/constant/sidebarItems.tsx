@@ -280,13 +280,13 @@ export const sidebarItems = (role: string) => {
   ];
 
   if (role === "admin") {
-    return studentSidebarItems;
+    return adminSidebarItems;
   } else if (role === "super_admin") {
-    return adminSidebarItems;
+    return superAdminSidebarItems;
   } else if (role === "faculty") {
-    return adminSidebarItems;
-  } else if (role === "student") {
     return facultySidebarItems;
+  } else if (role === "student") {
+    return studentSidebarItems;
   } else {
     return defaultSidebarItems;
   }

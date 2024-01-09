@@ -1,11 +1,22 @@
-import React from "react";
+"use client";
 
-const NotFoundPage = () => {
+import { Row } from "antd";
+import Image from "next/image";
+import error from "../assets/error.png";
+
+const ErrorPage = () => {
   return (
-    <div>
-      <h1>404! Not Found Page</h1>
-    </div>
+    <Row
+      justify="center"
+      align="middle"
+      style={{
+        height: "100vh",
+        color: "red",
+      }}
+    >
+      <Image src={error} width={500} alt="Error Image" />
+    </Row>
   );
 };
 
-export default NotFoundPage;
+export default ErrorPage;
