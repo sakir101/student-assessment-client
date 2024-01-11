@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserLoginMutation } from "@/redux/api/authApi";
-import { storeUserInfo } from "@/services/auth.service";
+import { getUserInfo, storeUserInfo } from "@/services/auth.service";
 import { Button, Col, Row, message } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,8 +26,11 @@ const LoginPage = () => {
     try {
       const res = await userLogin({ ...data }).unwrap();
       if (res?.accessToken) {
-        router.push("/profile");
         message.success("User logged in successfully!");
+        const { role } = getUserInfo() as any;
+        if (role) {
+          router.push(`/${role}/profile/account-profile`);
+        }
       }
       storeUserInfo({ accessToken: res?.accessToken });
       message.destroy(key);

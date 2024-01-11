@@ -26,7 +26,12 @@ const Header = () => {
     },
   ];
   return (
-    <AntHeader>
+    <AntHeader
+      style={{
+        background:
+          "linear-gradient(to right, #051937, #001b4b, #001c5f, #001b71, #0c1682)",
+      }}
+    >
       <Row
         justify="end"
         align="middle"

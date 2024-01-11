@@ -10,18 +10,21 @@ const Contents = ({ children }: { children: React.ReactNode }) => {
   return (
     <Content style={{ minHeight: "100vh", color: "black" }}>
       <Header />
-      <SABreadCrumb
-        items={[
-          {
-            label: `${base}`,
-            link: `/${base}`,
-          },
-          {
-            label: "student",
-            link: `/${base}/student`,
-          },
-        ]}
-      />
+      <div className="ms-10 lg:ms-0">
+        <SABreadCrumb
+          items={[
+            {
+              label: `${base}`,
+              link: `/${base}`,
+            },
+            {
+              label: "student",
+              link: `/${base}/student`,
+            },
+          ]}
+        />
+      </div>
+
       {children}
     </Content>
   );

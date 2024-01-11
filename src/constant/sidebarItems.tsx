@@ -16,17 +16,28 @@ import Link from "next/link";
 export const sidebarItems = (role: string) => {
   const defaultSidebarItems: MenuProps["items"] = [
     {
-      label: "Profile",
+      label: <p className="hover:text-slate-400">Profile</p>,
       key: "profile",
       icon: <ProfileOutlined />,
       children: [
         {
-          label: <Link href={`/${role}/account-profile`}>Account Profile</Link>,
-          key: `/${role}/profile`,
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/profile/account-profile`}
+            >
+              Account Profile
+            </Link>
+          ),
+          key: `/${role}/profile/account-profile`,
         },
         {
-          label: <Link href={`/${role}/change-password`}>Change Password</Link>,
-          key: `/${role}/change-password`,
+          label: (
+            <Link href={`/${role}/profile/password-change`}>
+              Change Password
+            </Link>
+          ),
+          key: `/${role}/profile/password-change`,
         },
       ],
     },
@@ -109,12 +120,16 @@ export const sidebarItems = (role: string) => {
       key: "interest",
       children: [
         {
-          label: <Link href={`/${role}/set-interest`}>Set Interest</Link>,
-          key: `/${role}/set-interest`,
+          label: (
+            <Link href={`/${role}/interest-faculty/create`}>Set Interest</Link>
+          ),
+          key: `/${role}/interest-faculty/create`,
         },
         {
-          label: <Link href={`/${role}/interest-list`}>Interest List</Link>,
-          key: `/${role}/interest-list`,
+          label: (
+            <Link href={`/${role}/interest-faculty/view`}>Interest List</Link>
+          ),
+          key: `/${role}/interest-faculty/view`,
         },
       ],
     },
@@ -195,15 +210,15 @@ export const sidebarItems = (role: string) => {
       children: [
         {
           label: (
-            <Link href={`/${role}/set-interest-student`}>Set Interest</Link>
+            <Link href={`/${role}/interest-student/create`}>Set Interest</Link>
           ),
-          key: `/${role}/set-interest-student`,
+          key: `/${role}/interest-student/create`,
         },
         {
           label: (
-            <Link href={`/${role}/interest-list-student`}>Interest List</Link>
+            <Link href={`/${role}/interest-student/view`}>Interest List</Link>
           ),
-          key: `/${role}/interest-list-student`,
+          key: `/${role}/interest-student/view`,
         },
       ],
     },
