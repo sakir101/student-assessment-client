@@ -19,3 +19,10 @@ export type IGenericErrorMessage = {
     path: string | number;
     message: string;
 };
+
+export type IInterest = {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+}

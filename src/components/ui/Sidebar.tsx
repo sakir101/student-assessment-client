@@ -17,7 +17,7 @@ const Sidebar = () => {
 
   return (
     <Sider
-      theme="light"
+      className="z-50"
       style={{
         height: "100vh",
         background:

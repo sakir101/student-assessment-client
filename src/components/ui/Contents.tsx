@@ -8,7 +8,10 @@ const { Content } = Layout;
 const Contents = ({ children }: { children: React.ReactNode }) => {
   const base = "admin";
   return (
-    <Content style={{ minHeight: "100vh", color: "black" }}>
+    <Content
+      className="w-full fixed lg:w-fit lg:static"
+      style={{ minHeight: "100vh", color: "black" }}
+    >
       <Header />
       <div className="ms-10 lg:ms-0">
         <SABreadCrumb

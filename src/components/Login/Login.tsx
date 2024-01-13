@@ -25,15 +25,14 @@ const LoginPage = () => {
     message.loading({ content: "Loading...", key });
     try {
       const res = await userLogin({ ...data }).unwrap();
+
       if (res?.accessToken) {
-        message.success("User logged in successfully!");
+        storeUserInfo({ accessToken: res?.accessToken });
         const { role } = getUserInfo() as any;
-        if (role) {
-          router.push(`/${role}/profile/account-profile`);
-        }
+        router.push(`/${role}/profile/account-profile`);
+        message.success("User logged in successfully!");
+        message.destroy(key);
       }
-      storeUserInfo({ accessToken: res?.accessToken });
-      message.destroy(key);
     } catch (err: any) {
       console.error(err.message);
       message.success("User logged in fail");
