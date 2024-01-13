@@ -1,9 +1,6 @@
 
-.ant-layout-sider-zero-width-trigger-left {
-background-color: #95a9bb;
-    }
-
-
-.trigger {
-    background-color: aliceblue;
-}
+.fixed-content {
+    height: 100vh; /* or any other value */
+    overflow-y: auto; /* or scroll */
+  }
+  

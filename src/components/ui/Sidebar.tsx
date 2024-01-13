@@ -19,7 +19,7 @@ const Sidebar = () => {
     <Sider
       className="z-50"
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         background:
           "linear-gradient(to right, #051937, #001b4b, #001c5f, #001b71, #0c1682)",
       }}
