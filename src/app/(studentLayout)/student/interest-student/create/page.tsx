@@ -16,7 +16,10 @@ const InterestCreate = () => {
   const [interestSelect, setInterestSelect] = useState(false);
   const [english, setEnglish] = useState(true);
   const [bangla, setBangla] = useState(false);
-  const { data, isLoading } = useGetInterestQuery({ limit: 10, page: 1 });
+  const { data, isLoading } = useGetInterestQuery(
+    { limit: 10, page: 1 },
+    { refetchOnMountOrArgChange: true }
+  );
   const [assignInterest, { isSuccess, isError }] = useAssignInterestMutation();
 
   const interests = data?.interest;

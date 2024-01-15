@@ -6,11 +6,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import Loading from "@/app/loading";
+import { useGetSingleStudentQuery } from "@/redux/api/studentApi";
 
 const CareerGuidePage: React.FC = () => {
   const { userId: id } = getUserInfo() as any;
-  const { data, isLoading } = useGetCareerQuery(id);
-
+  const { data: studentData, isLoading: studentDataIsLoading } =
+    useGetSingleStudentQuery(id);
+  const { data, isLoading } = useGetCareerQuery(id, {
+    refetchOnMountOrArgChange: true,
+  });
+  console.log(studentData);
   const categoryNames: string[] = [
     "CategoryA",
     "CategoryB",
@@ -209,8 +214,9 @@ const CareerGuidePage: React.FC = () => {
       ) : Object.keys(data || {}).length ? (
         <div>
           <p className="text-center font-semibold text-lg my-7">
-            Hi! Sakir system analyzed your data. After analyzing your data it is
-            found that
+            Hi! <span className="text-blue-700">{studentData?.firstName}</span>{" "}
+            system analyzed your data. After analyzing your data it is found
+            that
           </p>
           <div className="divider"></div>
           <div>
