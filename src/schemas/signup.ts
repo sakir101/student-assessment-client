@@ -14,7 +14,7 @@ export const signupStudentSchema = yup.object().shape({
     student: yup.object().shape({
         studentId: yup.string().required("Student ID is required"),
         firstName: yup.string().required("First name is required"),
-        middleName: yup.string().required("Middle name is required"),
+        middleName: yup.string().optional(),
         lastName: yup.string().required("Last name is required"),
         gender: yup.string().required("Gender is required"),
         institution: yup.string().required("Institution is required"),

@@ -106,7 +106,6 @@ const SignUpStudent = () => {
                 size="large"
                 label="Middle Name"
                 placeholder="Ahmed"
-                required
               />
             </div>
             <div

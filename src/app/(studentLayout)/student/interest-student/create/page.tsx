@@ -1,9 +1,9 @@
 "use client";
 
 import Form from "@/components/Forms/Form";
-import FormMultiSelectField, {
+import FormSelectField, {
   SelectOptions,
-} from "@/components/Forms/FormMultiSelectField";
+} from "@/components/Forms/FormSelectField";
 
 import { useGetInterestQuery } from "@/redux/api/interestApi";
 import { Button, message } from "antd";
@@ -11,6 +11,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useAssignInterestMutation } from "@/redux/api/interestStudentApi";
 import { getUserInfo } from "@/services/auth.service";
+import FormMultiSelectField from "@/components/Forms/FormMultiSelectField";
 
 const InterestCreate = () => {
   const [interestSelect, setInterestSelect] = useState(false);
