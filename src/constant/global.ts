@@ -8,3 +8,14 @@ export const genderOptions = [
         value: "female",
     }
 ];
+
+export const universityOptions = [
+    {
+        label: "Daffodil International University",
+        value: "Daffodil International University",
+    },
+    {
+        label: "Brac University",
+        value: "Brac University",
+    }
+];

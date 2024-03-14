@@ -26,3 +26,18 @@ export type IInterest = {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IFaculty {
+    id: string;
+    facultyId: string;
+    firstName: string;
+    lastName: string;
+    middleName: string | null;
+    institution: string;
+    contactNum: string;
+    profileImage: string;
+    gender: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}

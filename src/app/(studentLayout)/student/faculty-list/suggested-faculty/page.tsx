@@ -1,8 +1,6 @@
 "use client";
 
-import { useGetAssignInterestQuery } from "@/redux/api/studentApi";
-import { getUserInfo } from "@/services/auth.service";
-import { Button, Input, message, Modal } from "antd";
+import { Button, Input, message, Modal, Select } from "antd";
 
 import { useState } from "react";
 import {
@@ -10,14 +8,19 @@ import {
   ReloadOutlined,
   ExclamationCircleFilled,
 } from "@ant-design/icons";
-import SATable from "@/components/ui/Table";
-import Loading from "@/app/loading";
-
-import { useDeleteInterestMutation } from "@/redux/api/interestStudentApi";
 import { useDebounced } from "@/redux/hooks";
+import { getUserInfo } from "@/services/auth.service";
+import Loading from "@/app/loading";
+import SATable from "@/components/ui/Table";
+import { useGetSpecificMatchFacultyQuery } from "@/redux/api/facultyApi";
+import faculty from "@/app/(facultyLayout)/faculty/page";
+import Image from "next/image";
+import FormSelectField from "@/components/Forms/FormSelectField";
+import { genderOptions, universityOptions } from "@/constant/global";
+import { useGetInterestQuery } from "@/redux/api/interestApi";
+import Link from "next/link";
 
-const { confirm } = Modal;
-const AssignInterestView = () => {
+const SuggestedFacultyList = () => {
   const query: Record<string, any> = {};
 
   const [page, setPage] = useState<number>(1);
@@ -25,15 +28,18 @@ const AssignInterestView = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [InterestFaculty, setInterestFaculty] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [deleteInterest, { isSuccess, isError }] = useDeleteInterestMutation();
 
   query["size"] = size;
   query["page"] = page;
   query["sortBy"] = sortBy;
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
+  console.log(InterestFaculty);
+  if (InterestFaculty?.length > 0) {
+    query["InterestFaculty"] = InterestFaculty;
+  }
 
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
@@ -46,7 +52,11 @@ const AssignInterestView = () => {
 
   const { userId } = getUserInfo() as any;
 
-  const { data, isLoading, refetch } = useGetAssignInterestQuery(
+  const { data: interestData } = useGetInterestQuery({
+    refetchOnMountOrArgChange: true,
+  });
+
+  const { data, isLoading, refetch } = useGetSpecificMatchFacultyQuery(
     {
       id: userId,
       arg: query,
@@ -54,67 +64,64 @@ const AssignInterestView = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const interestData = data?.interest;
+  const interests = interestData?.interest;
+  const interestOptions = interests?.map((interest) => {
+    return {
+      label: interest?.title,
+      value: interest?.title,
+    };
+  });
+
+  const facultyList = data?.faculty;
+
+  const newData = facultyList?.map((facultyItem) => ({
+    id: facultyItem.id ?? "",
+    name: `${facultyItem.firstName ?? ""} ${facultyItem.middleName ?? ""} ${
+      facultyItem.lastName ?? ""
+    }`,
+    institute: facultyItem.institution ?? "",
+    profileimg: facultyItem.profileImage ?? "",
+  }));
+
   const meta = data?.meta;
-
-  const showModal = async (id: string) => {
-    setIsModalOpen(true);
-    confirm({
-      title: "Are you sure delete this interest?",
-      icon: <ExclamationCircleFilled />,
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk() {
-        handleOk(id);
-      },
-      onCancel() {
-        handleClose();
-      },
-    });
+  const handleChange = (value: string) => {
+    setInterestFaculty(value);
   };
-  const handleOk = async (id: string) => {
-    const deleteData = { interest: [id] };
-    const key = "loadingKey";
-    message.loading({ content: "Loading...", key });
-    try {
-      const { userId: id } = getUserInfo() as any;
-      await deleteInterest({ data: deleteData, id: userId });
-      refetch();
-      setIsModalOpen(false);
-
-      message.destroy(key);
-      message.success("Interest Deleted successfully");
-
-      //@ts-ignore
-      if ((data?.interest ?? []).length === 1) {
-        window.location.reload();
-      }
-    } catch (err: any) {
-      //   console.error(err.message);
-      setIsModalOpen(false);
-      message.destroy(key);
-      message.error(err.message);
-    }
-  };
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
   const columns = [
     {
-      title: "Interest",
-      dataIndex: "title",
+      title: "Profile Image",
+      dataIndex: "profileimg",
+      key: "profileimg",
+      render: (profileimg: string) => (
+        <Image
+          src={profileimg}
+          width={70}
+          height={70}
+          alt="Profile"
+          style={{ borderRadius: "50%" }}
+        />
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       sorter: true,
     },
     {
-      title: "Action",
+      title: "University",
+      dataIndex: "institute",
+      key: "institute",
+      sorter: true,
+    },
+    {
+      title: "Account View",
       render: function (data: any) {
         return (
           <>
-            <Button type="primary" danger onClick={() => showModal(data?.id)}>
-              <DeleteOutlined />
-            </Button>
+            <Link href={`/student/faculty-list/suggested-faculty/${data.id}`}>
+              <Button type="primary">View</Button>
+            </Link>
           </>
         );
       },
@@ -140,7 +147,7 @@ const AssignInterestView = () => {
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Your Interest List
+        Your Suggested Faculty
       </h1>
 
       <div className="flex justify-center items-center mt-5 lg:mt-7">
@@ -173,6 +180,21 @@ const AssignInterestView = () => {
           </>
         )}
       </div>
+      <div className="flex justify-center items-center mt-5 lg:mt-7">
+        <Select
+          defaultValue="Filter Interest"
+          className="w-full lg:w-1/4 mr-3"
+          onChange={handleChange}
+          options={interestOptions}
+          allowClear
+        />
+        <Select
+          defaultValue="Filter University"
+          className="w-full lg:w-1/4"
+          options={universityOptions}
+          allowClear
+        />
+      </div>
       <div className="my-10 lg:my-12 ">
         {isLoading ? (
           <Loading />
@@ -180,7 +202,7 @@ const AssignInterestView = () => {
           <SATable
             loading={isLoading}
             columns={columns}
-            dataSource={data?.interest}
+            dataSource={newData}
             pageSize={size}
             totalPages={meta?.total}
             showSizeChanger={true}
@@ -202,4 +224,4 @@ const AssignInterestView = () => {
   );
 };
 
-export default AssignInterestView;
+export default SuggestedFacultyList;

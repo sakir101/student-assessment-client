@@ -159,7 +159,7 @@ export const sidebarItems = (role: string) => {
   const facultySidebarItems: MenuProps["items"] = [
     ...defaultSidebarItems,
     {
-      label: "Interest",
+      label: "Expertise",
       icon: <HeartOutlined />,
       key: "interest",
       children: [
@@ -167,23 +167,23 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/interest-faculty/create`}
+              href={`/${role}/expertise-faculty/create`}
             >
-              Set Interest
+              Set Expertise
             </Link>
           ),
-          key: `/${role}/interest-faculty/create`,
+          key: `/${role}/expertise-faculty/create`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/interest-faculty/view`}
+              href={`/${role}/expertise-faculty/view`}
             >
-              Interest List
+              Expertise List
             </Link>
           ),
-          key: `/${role}/interest-faculty/view`,
+          key: `/${role}/expertise-faculty/view`,
         },
       ],
     },
@@ -377,23 +377,23 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/enrolled-faculty-list`}
+              href={`/${role}/faculty-list/enrolled-faculty`}
             >
               Enrolled Faculty
             </Link>
           ),
-          key: `/${role}/enrolled-faculty-list`,
+          key: `/${role}/faculty-list/enrolled-faculty`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/suggested-faculty-list`}
+              href={`/${role}/faculty-list/suggested-faculty`}
             >
               Suggested Faculty
             </Link>
           ),
-          key: `/${role}/suggested-faculty-list`,
+          key: `/${role}/faculty-list/suggested-faculty`,
         },
       ],
     },

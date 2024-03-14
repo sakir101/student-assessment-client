@@ -15,7 +15,6 @@ const AccountStudent = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(data);
   return (
     <div className="mt-5 lg:mt-7 p-4">
       {isLoading ? (

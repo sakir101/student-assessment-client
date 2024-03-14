@@ -1,7 +1,5 @@
 "use client";
 
-import { useGetAssignInterestQuery } from "@/redux/api/studentApi";
-import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, message, Modal } from "antd";
 
 import { useState } from "react";
@@ -10,14 +8,18 @@ import {
   ReloadOutlined,
   ExclamationCircleFilled,
 } from "@ant-design/icons";
-import SATable from "@/components/ui/Table";
-import Loading from "@/app/loading";
-
-import { useDeleteInterestMutation } from "@/redux/api/interestStudentApi";
 import { useDebounced } from "@/redux/hooks";
+import Loading from "@/app/loading";
+import SATable from "@/components/ui/Table";
+import { getUserInfo } from "@/services/auth.service";
+import {
+  useDeleteExpertiseMutation,
+  useGetAssignExpertiseQuery,
+} from "@/redux/api/facultyApi";
 
 const { confirm } = Modal;
-const AssignInterestView = () => {
+
+const AssignExpertiseView = () => {
   const query: Record<string, any> = {};
 
   const [page, setPage] = useState<number>(1);
@@ -27,7 +29,8 @@ const AssignInterestView = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [deleteInterest, { isSuccess, isError }] = useDeleteInterestMutation();
+  const [deleteExpertise, { isSuccess, isError }] =
+    useDeleteExpertiseMutation();
 
   query["size"] = size;
   query["page"] = page;
@@ -46,7 +49,7 @@ const AssignInterestView = () => {
 
   const { userId } = getUserInfo() as any;
 
-  const { data, isLoading, refetch } = useGetAssignInterestQuery(
+  const { data, isLoading, refetch } = useGetAssignExpertiseQuery(
     {
       id: userId,
       arg: query,
@@ -60,7 +63,7 @@ const AssignInterestView = () => {
   const showModal = async (id: string) => {
     setIsModalOpen(true);
     confirm({
-      title: "Are you sure delete this interest?",
+      title: "Are you sure delete this expertise?",
       icon: <ExclamationCircleFilled />,
       okText: "Yes",
       okType: "danger",
@@ -79,12 +82,12 @@ const AssignInterestView = () => {
     message.loading({ content: "Loading...", key });
     try {
       const { userId: id } = getUserInfo() as any;
-      await deleteInterest({ data: deleteData, id: userId });
+      await deleteExpertise({ data: deleteData, id: userId });
       refetch();
       setIsModalOpen(false);
 
       message.destroy(key);
-      message.success("Interest Deleted successfully");
+      message.success("Expertise Deleted successfully");
 
       //@ts-ignore
       if ((data?.interest ?? []).length === 1) {
@@ -202,4 +205,4 @@ const AssignInterestView = () => {
   );
 };
 
-export default AssignInterestView;
+export default AssignExpertiseView;
