@@ -30,7 +30,7 @@ export const studentApi = baseApi.injectEndpoints({
                 method: "GET",
                 params: arg
             }),
-            transformResponse: (response: IInterest, meta: IMeta) => {
+            transformResponse: (response: IInterest[], meta: IMeta) => {
                 return {
                     interest: response,
                     meta,
@@ -62,6 +62,14 @@ export const studentApi = baseApi.injectEndpoints({
             },
             providesTags: [tagTypes.student],
         }),
+
+        getSingleStudentByStudentId: build.query({
+            query: (id: string | string[] | undefined) => ({
+                url: `${Student_URL}/${id}/student-id`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.student],
+        }),
     }),
 })
 
@@ -70,5 +78,6 @@ export const {
     useGetSingleStudentQuery,
     useGetAssignInterestQuery,
     useEnrollFacultyMutation,
-    useGetEnrollFacultyQuery
+    useGetEnrollFacultyQuery,
+    useGetSingleStudentByStudentIdQuery
 } = studentApi

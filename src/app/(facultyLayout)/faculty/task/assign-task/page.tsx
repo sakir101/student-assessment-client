@@ -1,0 +1,73 @@
+"use client";
+
+import React, { useState } from "react";
+import { Pagination } from "antd";
+
+const Test = () => {
+  const [page, setPage] = useState(1);
+
+  const data = [
+    {
+      id: 1,
+      name: "Item 1",
+    },
+    {
+      id: 2,
+      name: "Item 2",
+    },
+    {
+      id: 3,
+      name: "Item 3",
+    },
+    {
+      id: 4,
+      name: "Item 4",
+    },
+    {
+      id: 5,
+      name: "Item 5",
+    },
+    {
+      id: 6,
+      name: "Item 6",
+    },
+    {
+      id: 7,
+      name: "Item 7",
+    },
+    {
+      id: 8,
+      name: "Item 8",
+    },
+    {
+      id: 9,
+      name: "Item 9",
+    },
+    {
+      id: 10,
+      name: "Item 10",
+    },
+  ];
+
+  const size = 3;
+  const totalItems = data.length;
+  const startIndex = (page - 1) * size;
+  const endIndex = Math.min(startIndex + size, totalItems);
+  const currentData = data.slice(startIndex, endIndex);
+  return (
+    <div>
+      {currentData.map((item) => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+      <Pagination
+        current={page}
+        defaultCurrent={1}
+        total={6}
+        pageSize={size}
+        onChange={(page) => setPage(page)}
+      />
+    </div>
+  );
+};
+
+export default Test;

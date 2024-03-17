@@ -1,4 +1,4 @@
-import { IFaculty, IInterest, IMeta } from "@/types";
+import { IFaculty, IInterest, IMeta, IStudent, ITask } from "@/types";
 import { tagTypes } from "../tag-types"
 import { baseApi } from "./baseApi"
 
@@ -80,6 +80,36 @@ export const facultyApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.faculty],
         }),
 
+        getEnrolledStudentList: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Faculty_URL}/getEnrolledStudents/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IStudent[], meta: IMeta) => {
+                return {
+                    student: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
+
+        getCreatedTasks: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Faculty_URL}/${id}/getSpecificFacultyTask`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: ITask[], meta: IMeta) => {
+                return {
+                    task: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
+
     })
 
 })
@@ -92,5 +122,7 @@ export const
         useAssignExpertiseFacultyMutation,
         useGetAssignExpertiseQuery,
         useDeleteExpertiseMutation,
-        useGetSpecificMatchFacultyQuery
+        useGetSpecificMatchFacultyQuery,
+        useGetEnrolledStudentListQuery,
+        useGetCreatedTasksQuery
     } = facultyApi

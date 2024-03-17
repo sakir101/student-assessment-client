@@ -225,23 +225,23 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/enrolled-student`}
+              href={`/${role}/student-list/enrolled-student`}
             >
               Enrolled Student
             </Link>
           ),
-          key: `/${role}/enrolled-student`,
+          key: `/${role}/student-list/enrolled-student`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/complete-task`}
+              href={`/${role}/student-list/complete-task`}
             >
               Complete Task
             </Link>
           ),
-          key: `/${role}/complete-task`,
+          key: `/${role}/student-list/complete-task`,
         },
       ],
     },
@@ -254,23 +254,34 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/create-task`}
+              href={`/${role}/task/create-task`}
             >
               Create Task
             </Link>
           ),
-          key: `/${role}/create-task`,
+          key: `/${role}/task/create-task`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/assign-task`}
+              href={`/${role}/task/task-list`}
+            >
+              Task List
+            </Link>
+          ),
+          key: `/${role}/task/task-list`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/task/assign-task`}
             >
               Assign Task
             </Link>
           ),
-          key: `/${role}/assign-task`,
+          key: `/${role}/task/assign-task`,
         },
       ],
     },

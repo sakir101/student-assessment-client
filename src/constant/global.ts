@@ -19,3 +19,22 @@ export const universityOptions = [
         value: "Brac University",
     }
 ];
+
+export const timeOptions = [
+    {
+        label: "Recently",
+        value: "Recently"
+    },
+    {
+        label: "2 Days",
+        value: "2days"
+    },
+    {
+        label: "1 Week",
+        value: "1week"
+    },
+    {
+        label: "1 Month",
+        value: "1month"
+    }
+]

@@ -42,7 +42,31 @@ export interface IFaculty {
     updatedAt: string;
 }
 
+export interface IStudent {
+    id: string;
+    studentId: string;
+    firstName: string;
+    lastName: string;
+    middleName: string | null;
+    profileImage: string;
+    gender: string;
+    institution: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface FacultyInterest {
     interestId: string;
     facultyId: string;
+}
+
+export interface ITask {
+    id: string;
+    title: string;
+    description: string;
+    solution: string | null;
+    createdAt: string;
+    updatedAt: string;
+    hint: string[];
 }
