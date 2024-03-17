@@ -41,3 +41,8 @@ export interface IFaculty {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface FacultyInterest {
+    interestId: string;
+    facultyId: string;
+}

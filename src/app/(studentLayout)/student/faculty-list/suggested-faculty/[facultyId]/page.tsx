@@ -1,33 +1,63 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { useGetSingleFacultyByFacultyIdQuery } from "@/redux/api/facultyApi";
+import {
+  useGetAssignExpertiseQuery,
+  useGetSingleFacultyByFacultyIdQuery,
+} from "@/redux/api/facultyApi";
 import { Tabs } from "antd";
 import { TabsProps } from "antd/lib/tabs";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import type { RadioChangeEvent } from "antd";
 
 import React from "react";
+import { FacultyInterest } from "@/types";
 
 const { TabPane } = Tabs;
+type TabPosition = "left" | "right" | "top" | "bottom";
 
 const Page = () => {
+  const query: Record<string, any> = {};
+  const [id, setId] = useState<string>("");
+
+  const [mode, setMode] = useState<TabPosition>("left");
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const url = `${pathname}?${searchParams}`;
-    console.log(url);
-    // You can now use the current URL
-    // ...
+    const match = url.match(/\/([^\/?]+)\?$/);
+    const extractId = match ? match[1] : null;
+    if (extractId !== null) {
+      setId(extractId);
+    }
   }, [pathname, searchParams]);
-  const id = 32543;
+
   const { data, isLoading, refetch } = useGetSingleFacultyByFacultyIdQuery(
     id,
 
     { refetchOnMountOrArgChange: true }
   );
+
+  const handleModeChange = (e: RadioChangeEvent) => {
+    setMode(e.target.value);
+  };
+
+  const userId = data?.user?.id;
+
+  const { data: data1 } = useGetAssignExpertiseQuery(
+    {
+      id: userId,
+      arg: query,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
+  console.log(data1);
+  const interestData = data1?.interest;
+  const meta = data1?.meta;
+
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -35,31 +65,62 @@ const Page = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "Tab 1",
+      label: "Personal Information",
       children: (
         <div>
-          <h2>Content of Tab Pane 1</h2>
-          <p>This is some HTML content for Tab 1.</p>
+          <div className="mt-5 grid grid-cols-2 items-center mx-auto ">
+            <div>
+              <p className="mb-5">
+                <span className="text-lg text-gray-600 ">University</span>
+              </p>
+              <p className="mb-5">
+                <span className="text-lg text-gray-600 ">Employee ID</span>
+              </p>
+              <p className="mb-5">
+                <span className="text-lg text-gray-600 ">Contact Number</span>
+              </p>
+              <p className="mb-5">
+                <span className="text-lg text-gray-600 ">Email</span>
+              </p>
+            </div>
+
+            <div>
+              <p className="mb-5">
+                <span className="text-lg font-semibold">
+                  {data?.institution}
+                </span>
+              </p>
+              <p className="mb-5">
+                <span className="text-lg font-semibold">{data?.facultyId}</span>
+              </p>
+              <p className="mb-5">
+                <span className="text-lg font-semibold">
+                  {data?.contactNum}
+                </span>
+              </p>
+              <p className="mb-5">
+                <span className="text-lg font-semibold">
+                  {data?.user?.email}
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       ),
     },
     {
       key: "2",
-      label: "Tab 2",
+      label: "Expertise",
       children: (
-        <div>
-          <h2>Content of Tab Pane 2</h2>
-          <p>This is some HTML content for Tab 2.</p>
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: "Tab 3",
-      children: (
-        <div>
-          <h2>Content of Tab Pane 3</h2>
-          <p>This is some HTML content for Tab 3.</p>
+        <div className="mt-5 grid grid-cols-2 items-center mx-auto ">
+          <div>
+            <h2 className="me-4">Expertise Titles</h2>
+          </div>
+          <div>
+            {data1?.interest.map((interest, index) => (
+              <p key={index}>{interest.title}</p>
+            ))}
+          </div>
         </div>
       ),
     },
@@ -89,13 +150,20 @@ const Page = () => {
                 </span>
               </div>
               <div className="divider"></div>
-              <Tabs defaultActiveKey="1" onChange={onChange}>
-                {items.map((item) => (
-                  <TabPane key={item.key} tab={item.label}>
-                    {item.children}
-                  </TabPane>
-                ))}
-              </Tabs>
+              <div className="flex justify-center mx-auto">
+                <Tabs
+                  defaultActiveKey="1"
+                  tabPosition={mode}
+                  onChange={onChange}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  {items.map((item) => (
+                    <TabPane key={item.key} tab={item.label}>
+                      {item.children}
+                    </TabPane>
+                  ))}
+                </Tabs>
+              </div>
             </div>
           )}
         </>

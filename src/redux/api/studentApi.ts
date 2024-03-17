@@ -1,4 +1,4 @@
-import { IInterest, IMeta } from "@/types";
+import { IFaculty, IInterest, IMeta } from "@/types";
 import { tagTypes } from "../tag-types"
 import { baseApi } from "./baseApi"
 
@@ -38,7 +38,37 @@ export const studentApi = baseApi.injectEndpoints({
             },
             providesTags: [tagTypes.student],
         }),
+
+        enrollFaculty: build.mutation({
+            query: ({ data, id }: { data: any; id: string }) => ({
+                url: `${Student_URL}/${id}/enroll-faculties`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.student],
+        }),
+
+        getEnrollFaculty: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Student_URL}/getEnrolledFaculties/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IFaculty[], meta: IMeta) => {
+                return {
+                    faculty: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.student],
+        }),
     }),
 })
 
-export const { useSignUpStudentMutation, useGetSingleStudentQuery, useGetAssignInterestQuery } = studentApi
+export const {
+    useSignUpStudentMutation,
+    useGetSingleStudentQuery,
+    useGetAssignInterestQuery,
+    useEnrollFacultyMutation,
+    useGetEnrollFacultyQuery
+} = studentApi

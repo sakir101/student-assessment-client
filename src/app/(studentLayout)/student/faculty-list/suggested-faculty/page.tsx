@@ -19,7 +19,9 @@ import FormSelectField from "@/components/Forms/FormSelectField";
 import { genderOptions, universityOptions } from "@/constant/global";
 import { useGetInterestQuery } from "@/redux/api/interestApi";
 import Link from "next/link";
+import { useEnrollFacultyMutation } from "@/redux/api/studentApi";
 
+const { confirm } = Modal;
 const SuggestedFacultyList = () => {
   const query: Record<string, any> = {};
 
@@ -29,6 +31,7 @@ const SuggestedFacultyList = () => {
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [InterestFaculty, setInterestFaculty] = useState<string>("");
+  const [institution, setInstitution] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   query["size"] = size;
@@ -40,7 +43,9 @@ const SuggestedFacultyList = () => {
   if (InterestFaculty?.length > 0) {
     query["InterestFaculty"] = InterestFaculty;
   }
-
+  if (institution?.length > 0) {
+    query["institution"] = institution;
+  }
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,
@@ -64,6 +69,8 @@ const SuggestedFacultyList = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  const [enrollFaculty, { isSuccess, isError }] = useEnrollFacultyMutation();
+
   const interests = interestData?.interest;
   const interestOptions = interests?.map((interest) => {
     return {
@@ -86,6 +93,46 @@ const SuggestedFacultyList = () => {
   const meta = data?.meta;
   const handleChange = (value: string) => {
     setInterestFaculty(value);
+  };
+
+  const handleChangeUniversity = (value: string) => {
+    setInstitution(value);
+  };
+  const showModal = async (id: string) => {
+    setIsModalOpen(true);
+    confirm({
+      title: "Are you sure you want to enroll under this faculty?",
+      icon: <ExclamationCircleFilled />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleOk(id);
+      },
+      onCancel() {
+        handleClose();
+      },
+    });
+  };
+  const handleOk = async (id: string) => {
+    const facultyData = { faculty: [id] };
+    const key = "loadingKey";
+    message.loading({ content: "Loading...", key });
+    try {
+      await enrollFaculty({ data: facultyData, id: userId });
+      refetch();
+      setIsModalOpen(false);
+
+      message.destroy(key);
+      message.success("Enroll Faculty successful");
+    } catch (err: any) {
+      setIsModalOpen(false);
+      message.destroy(key);
+      message.error(err.message);
+    }
+  };
+  const handleClose = () => {
+    setIsModalOpen(false);
   };
   const columns = [
     {
@@ -122,6 +169,18 @@ const SuggestedFacultyList = () => {
             <Link href={`/student/faculty-list/suggested-faculty/${data.id}`}>
               <Button type="primary">View</Button>
             </Link>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      render: function (data: any) {
+        return (
+          <>
+            <Button type="primary" danger onClick={() => showModal(data?.id)}>
+              Enroll
+            </Button>
           </>
         );
       },
@@ -191,6 +250,7 @@ const SuggestedFacultyList = () => {
         <Select
           defaultValue="Filter University"
           className="w-full lg:w-1/4"
+          onChange={handleChangeUniversity}
           options={universityOptions}
           allowClear
         />

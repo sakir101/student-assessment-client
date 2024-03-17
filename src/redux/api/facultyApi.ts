@@ -47,7 +47,7 @@ export const facultyApi = baseApi.injectEndpoints({
                 method: "GET",
                 params: arg
             }),
-            transformResponse: (response: IInterest, meta: IMeta) => {
+            transformResponse: (response: IInterest[], meta: IMeta) => {
                 return {
                     interest: response,
                     meta,
@@ -79,6 +79,7 @@ export const facultyApi = baseApi.injectEndpoints({
             },
             providesTags: [tagTypes.faculty],
         }),
+
     })
 
 })
