@@ -15,7 +15,6 @@ const CreateTask = () => {
   const [taskCreate, { isSuccess, isError, isLoading }] =
     useTaskCreateMutation();
   const onSubmit = async (data: any) => {
-    console.log(data);
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
     const { userId } = getUserInfo() as any;

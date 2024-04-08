@@ -4,7 +4,7 @@ import { ReactElement, ReactNode } from "react";
 interface IModal {
   isOpen: boolean;
   closeModal: () => void;
-  title: string | ReactNode;
+  title?: string | ReactNode;
   children: ReactElement;
   handleOk?: () => void;
   showCancelButton?: boolean;

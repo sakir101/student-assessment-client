@@ -1,73 +1,67 @@
 "use client";
 
 import React, { useState } from "react";
-import { Pagination } from "antd";
+import { Button, Modal, Form, Input } from "antd";
 
-const Test = () => {
-  const [page, setPage] = useState(1);
+const App: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const data = [
-    {
-      id: 1,
-      name: "Item 1",
-    },
-    {
-      id: 2,
-      name: "Item 2",
-    },
-    {
-      id: 3,
-      name: "Item 3",
-    },
-    {
-      id: 4,
-      name: "Item 4",
-    },
-    {
-      id: 5,
-      name: "Item 5",
-    },
-    {
-      id: 6,
-      name: "Item 6",
-    },
-    {
-      id: 7,
-      name: "Item 7",
-    },
-    {
-      id: 8,
-      name: "Item 8",
-    },
-    {
-      id: 9,
-      name: "Item 9",
-    },
-    {
-      id: 10,
-      name: "Item 10",
-    },
-  ];
+  const [form] = Form.useForm();
 
-  const size = 3;
-  const totalItems = data.length;
-  const startIndex = (page - 1) * size;
-  const endIndex = Math.min(startIndex + size, totalItems);
-  const currentData = data.slice(startIndex, endIndex);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        console.log("Form values:", values);
+        form.resetFields();
+        setIsModalOpen(false);
+      })
+      .catch((errorInfo) => {
+        console.log("Validation failed:", errorInfo);
+      });
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div>
-      {currentData.map((item) => (
-        <div key={item.id}>{item.name}</div>
-      ))}
-      <Pagination
-        current={page}
-        defaultCurrent={1}
-        total={6}
-        pageSize={size}
-        onChange={(page) => setPage(page)}
-      />
-    </div>
+    <>
+      <Button type="primary" onClick={showModal}>
+        Open Modal
+      </Button>
+      <Modal
+        title="Basic Modal"
+        visible={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter your name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Please enter your email" },
+              { type: "email", message: "Please enter a valid email" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 
-export default Test;
+export default App;

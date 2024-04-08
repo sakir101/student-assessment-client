@@ -110,6 +110,23 @@ export const facultyApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.faculty],
         }),
 
+        getSingleSpecificFacultyTask: build.query({
+            query: ({ id, taskId }: { id: any, taskId: string }) => ({
+                url: `${Faculty_URL}/${id}/${taskId}`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.faculty],
+        }),
+
+        updateSingleFacultyTask: build.mutation({
+            query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
+                url: `${Faculty_URL}/${id}/${taskId}`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
     })
 
 })
@@ -124,5 +141,7 @@ export const
         useDeleteExpertiseMutation,
         useGetSpecificMatchFacultyQuery,
         useGetEnrolledStudentListQuery,
-        useGetCreatedTasksQuery
+        useGetCreatedTasksQuery,
+        useGetSingleSpecificFacultyTaskQuery,
+        useUpdateSingleFacultyTaskMutation
     } = facultyApi

@@ -8,6 +8,7 @@ import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, Pagination, Select } from "antd";
 import { useState } from "react";
 import { timeOptions } from "@/constant/global";
+import Link from "next/link";
 
 const TaskList = () => {
   const query: Record<string, any> = {};
@@ -61,8 +62,6 @@ const TaskList = () => {
 
   const taskData = data?.task;
   const meta = data?.meta;
-
-  console.log(typeof meta?.total);
 
   const handlePageChange = (currentPage: number) => {
     setPage(currentPage);
@@ -131,11 +130,15 @@ const TaskList = () => {
           >
             <p className="text-lg">Task Title: {item?.title}</p>
             <div className="flex justify-center items-center my-3">
-              <button className="btn btn-sm bg-blue-300  hover:to-blue-600 border-blue-300">
-                Update
-              </button>
+              <Link href={`/faculty/task/task-list/update/${item?.id}`}>
+                <button className="btn btn-sm bg-blue-300  hover:to-blue-600 border-blue-300">
+                  Update
+                </button>
+              </Link>
               <button className="btn btn-sm mx-4 bg-red-500">Delete</button>
-              <button className="btn btn-sm bg-white-400">View</button>
+              <Link href={`/faculty/task/task-list/${item?.id}`}>
+                <button className="btn btn-sm bg-white-400">View</button>
+              </Link>
             </div>
           </div>
         ))}
