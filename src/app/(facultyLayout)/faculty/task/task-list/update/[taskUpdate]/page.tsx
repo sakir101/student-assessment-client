@@ -5,18 +5,25 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { getUserInfo } from "@/services/auth.service";
 import {
   useGetSingleSpecificFacultyTaskQuery,
+  useGetSingleTaskHintQuery,
+  useTaskHintCreateMutation,
   useUpdateSingleFacultyTaskMutation,
+  useUpdateSingleTaskHintMutation,
 } from "@/redux/api/facultyApi";
 import CForm from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import { Button, message, Modal, Form, Input } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const TaskUpdate = () => {
   const query: Record<string, any> = {};
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [taskId, setTaskId] = useState<string>("");
-
+  const [hintId, setHintId] = useState<string>("");
+  const [form1] = Form.useForm();
+  const [form] = Form.useForm();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -29,8 +36,6 @@ const TaskUpdate = () => {
     }
   }, [pathname, searchParams]);
 
-  const [form] = Form.useForm();
-
   const { userId: id } = getUserInfo() as any;
 
   const { data, isLoading, refetch } = useGetSingleSpecificFacultyTaskQuery(
@@ -38,8 +43,20 @@ const TaskUpdate = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  const { data: hintData } = useGetSingleTaskHintQuery(hintId, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const [taskHintCreate] = useTaskHintCreateMutation();
+
   const [updateSingleFacultyTask, { isSuccess, isError }] =
     useUpdateSingleFacultyTaskMutation();
+
+  const [updateSingleTaskHint] = useUpdateSingleTaskHintMutation();
+
+  useEffect(() => {
+    form1.setFieldsValue({ description: hintData?.description });
+  }, [form1, hintData]);
 
   const updateTask = async (data: any) => {
     const key = "loadingKey";
@@ -63,11 +80,23 @@ const TaskUpdate = () => {
   };
 
   const handleOk = (taskId: any) => {
-    console.log(taskId);
+    const key = "loadingKey";
+    message.loading({ content: "Loading...", key });
     form
       .validateFields()
       .then((values) => {
-        console.log("Form values:", values);
+        taskHintCreate({ data: values, id, taskId })
+          .unwrap()
+          .then(() => {
+            message.success("Hint added successfully");
+          })
+          .catch((err) => {
+            console.log(err);
+            message.error("Failed to add hint");
+          })
+          .finally(() => {
+            message.destroy(key);
+          });
         form.resetFields();
         setIsModalOpen(false);
       })
@@ -78,6 +107,40 @@ const TaskUpdate = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const showModal1 = (id: any) => {
+    setHintId(id);
+    setIsModalOpen1(true);
+  };
+
+  const handleOk1 = (hintId: any) => {
+    const key = "loadingKey";
+    message.loading({ content: "Loading...", key });
+    form1
+      .validateFields()
+      .then((values) => {
+        updateSingleTaskHint({ data: values, taskId, hintId })
+          .unwrap()
+          .then(() => {
+            message.success("Hint updated successfully");
+          })
+          .catch((err) => {
+            message.error("Failed to update hint");
+          })
+          .finally(() => {
+            message.destroy(key);
+          });
+        form.resetFields();
+        setIsModalOpen(false);
+      })
+      .catch((errorInfo) => {
+        console.log("Validation failed:", errorInfo);
+      });
+  };
+
+  const handleCancel1 = () => {
+    setIsModalOpen1(false);
   };
 
   const defaultValues = {
@@ -146,11 +209,19 @@ const TaskUpdate = () => {
                 <div key={index} className="p-3 bg-slate-300 rounded-md mb-2">
                   <p>
                     <span>Hint {index + 1}: </span>
-                    <span>{hintItem}</span>
+                    <span>{hintItem?.description}</span>
                   </p>
-                  <div>
-                    <button>Update</button>
-                    <button>Delete</button>
+                  <div className="flex justify-center items-center mt-3">
+                    <Button
+                      type="primary"
+                      onClick={() => showModal1(hintItem?.id)}
+                      style={{ marginRight: 10 }}
+                    >
+                      <EditOutlined />
+                    </Button>
+                    <Button type="primary" danger>
+                      <DeleteOutlined />
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -170,6 +241,25 @@ const TaskUpdate = () => {
         onCancel={handleCancel}
       >
         <Form form={form} layout="vertical">
+          <Form.Item
+            label="Hint"
+            name="description"
+            rules={[
+              { required: true, message: "Please enter the hint description" },
+            ]}
+          >
+            <Input.TextArea rows={7} />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Hint Update"
+        visible={isModalOpen1}
+        okText="Update"
+        onOk={() => handleOk1(hintId)}
+        onCancel={handleCancel1}
+      >
+        <Form form={form1} layout="vertical">
           <Form.Item
             label="Hint"
             name="description"

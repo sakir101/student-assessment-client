@@ -63,10 +63,10 @@ const SingleTask = () => {
                 </div>
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
                   {data?.hint?.length > 0 ? (
-                    data.hint.map((hintItem: any, index: number) => (
+                    data?.hint.map((hintItem: any, index: number) => (
                       <p key={index}>
-                        <span>Hint1: </span>
-                        <span>{hintItem}</span>
+                        <span>Hint {index + 1}: </span>
+                        <span>{hintItem?.description}</span>
                       </p>
                     ))
                   ) : (

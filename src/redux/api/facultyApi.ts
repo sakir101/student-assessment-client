@@ -118,6 +118,14 @@ export const facultyApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.faculty],
         }),
 
+        getSingleTaskHint: build.query({
+            query: (id: string | string[] | undefined) => ({
+                url: `${Faculty_URL}/task/hint/${id}`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.faculty],
+        }),
+
         updateSingleFacultyTask: build.mutation({
             query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
                 url: `${Faculty_URL}/${id}/${taskId}`,
@@ -126,6 +134,26 @@ export const facultyApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: [tagTypes.faculty],
         }),
+
+        updateSingleTaskHint: build.mutation({
+            query: ({ data, taskId, hintId }: { data: any; taskId: string, hintId: string }) => ({
+                url: `${Faculty_URL}/updateHint/${taskId}/${hintId}`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
+        taskHintCreate: build.mutation({
+            query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
+                url: `${Faculty_URL}/${id}/${taskId}`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
+
 
     })
 
@@ -143,5 +171,8 @@ export const
         useGetEnrolledStudentListQuery,
         useGetCreatedTasksQuery,
         useGetSingleSpecificFacultyTaskQuery,
-        useUpdateSingleFacultyTaskMutation
+        useUpdateSingleFacultyTaskMutation,
+        useTaskHintCreateMutation,
+        useGetSingleTaskHintQuery,
+        useUpdateSingleTaskHintMutation
     } = facultyApi
