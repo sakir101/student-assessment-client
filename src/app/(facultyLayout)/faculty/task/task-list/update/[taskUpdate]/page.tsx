@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getUserInfo } from "@/services/auth.service";
 import {
+  useDeleteTaskHintMutation,
   useGetSingleSpecificFacultyTaskQuery,
   useGetSingleTaskHintQuery,
   useTaskHintCreateMutation,
@@ -14,12 +15,18 @@ import CForm from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import { Button, message, Modal, Form, Input } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExclamationCircleFilled,
+} from "@ant-design/icons";
 
+const { confirm } = Modal;
 const TaskUpdate = () => {
   const query: Record<string, any> = {};
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
   const [taskId, setTaskId] = useState<string>("");
   const [hintId, setHintId] = useState<string>("");
   const [form1] = Form.useForm();
@@ -53,6 +60,8 @@ const TaskUpdate = () => {
     useUpdateSingleFacultyTaskMutation();
 
   const [updateSingleTaskHint] = useUpdateSingleTaskHintMutation();
+
+  const [deleteTaskHint] = useDeleteTaskHintMutation();
 
   useEffect(() => {
     form1.setFieldsValue({ description: hintData?.description });
@@ -143,6 +152,43 @@ const TaskUpdate = () => {
     setIsModalOpen1(false);
   };
 
+  const showModal2 = async (id: string) => {
+    setIsModalOpen2(true);
+    confirm({
+      title: "Are you sure delete this hint?",
+      icon: <ExclamationCircleFilled />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleOk2(id);
+      },
+      onCancel() {
+        handleClose2();
+      },
+    });
+  };
+  const handleOk2 = async (hintId: string) => {
+    const key = "loadingKey";
+    message.loading({ content: "Loading...", key });
+    try {
+      await deleteTaskHint({ taskId, hintId });
+      refetch();
+      setIsModalOpen(false);
+      message.destroy(key);
+      message.success("Hint Deleted successfully");
+    } catch (err: any) {
+      //   console.error(err.message);
+      setIsModalOpen2(false);
+      message.destroy(key);
+      message.error(err.message);
+    }
+  };
+
+  const handleClose2 = () => {
+    setIsModalOpen2(false);
+  };
+
   const defaultValues = {
     title: data?.title,
     description: data?.description,
@@ -219,7 +265,11 @@ const TaskUpdate = () => {
                     >
                       <EditOutlined />
                     </Button>
-                    <Button type="primary" danger>
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={() => showModal2(hintItem?.id)}
+                    >
                       <DeleteOutlined />
                     </Button>
                   </div>

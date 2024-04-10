@@ -5,10 +5,12 @@ import { ReloadOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import { useGetCreatedTasksQuery } from "@/redux/api/facultyApi";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
-import { Button, Input, Pagination, Select } from "antd";
+import { Button, Input, Modal, Pagination, Select, message } from "antd";
 import { useState } from "react";
 import { timeOptions } from "@/constant/global";
 import Link from "next/link";
+
+const { confirm } = Modal;
 
 const TaskList = () => {
   const query: Record<string, any> = {};
@@ -20,6 +22,7 @@ const TaskList = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [createdAt, setCreatedAt] = useState<string>("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { userId } = getUserInfo() as any;
 
   query["size"] = size;
@@ -66,6 +69,44 @@ const TaskList = () => {
   const handlePageChange = (currentPage: number) => {
     setPage(currentPage);
   };
+
+  const showModal = async (id: string) => {
+    setIsModalOpen(true);
+    confirm({
+      title: "Are you sure delete this hint?",
+      icon: <ExclamationCircleFilled />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleOk(id);
+      },
+      onCancel() {
+        handleClose();
+      },
+    });
+  };
+  const handleOk = async (hintId: string) => {
+    const key = "loadingKey";
+    message.loading({ content: "Loading...", key });
+    try {
+      // await deleteTaskHint({ taskId, hintId });
+      // refetch();
+      // setIsModalOpen(false);
+      // message.destroy(key);
+      // message.success("Hint Deleted successfully");
+    } catch (err: any) {
+      //   console.error(err.message);
+      setIsModalOpen(false);
+      message.destroy(key);
+      message.error(err.message);
+    }
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
   const resetFilters = () => {
     setSortBy("");
     setSortOrder("");

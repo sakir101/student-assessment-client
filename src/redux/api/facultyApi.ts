@@ -153,7 +153,13 @@ export const facultyApi = baseApi.injectEndpoints({
             invalidatesTags: [tagTypes.faculty],
         }),
 
-
+        deleteTaskHint: build.mutation({
+            query: ({ taskId, hintId }: { taskId: string, hintId: string }) => ({
+                url: `${Faculty_URL}/${taskId}/${hintId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
 
     })
 
@@ -174,5 +180,6 @@ export const
         useUpdateSingleFacultyTaskMutation,
         useTaskHintCreateMutation,
         useGetSingleTaskHintQuery,
-        useUpdateSingleTaskHintMutation
+        useUpdateSingleTaskHintMutation,
+        useDeleteTaskHintMutation
     } = facultyApi
