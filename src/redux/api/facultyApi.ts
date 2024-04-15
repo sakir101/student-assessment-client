@@ -126,6 +126,54 @@ export const facultyApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.faculty],
         }),
 
+        getAssignTaskStudentList: build.query({
+            query: ({ id, taskId, arg }: { id: any, taskId: any, arg: Record<string, any> }) => ({
+                url: `${Faculty_URL}/getAssignTaskStudents/${id}/${taskId}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IStudent[], meta: IMeta) => {
+                return {
+                    student: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
+
+        getUnassignTaskStudentList: build.query({
+            query: ({ id, taskId, arg }: { id: any, taskId: any, arg: Record<string, any> }) => ({
+                url: `${Faculty_URL}/getUnassignTaskStudents/${id}/${taskId}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IStudent[], meta: IMeta) => {
+                return {
+                    student: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
+
+        assignTaskStudent: build.mutation({
+            query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
+                url: `${Faculty_URL}/assignTask/${id}/${taskId}`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
+        unassignTaskStudent: build.mutation({
+            query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
+                url: `${Faculty_URL}/unassignTask/${id}/${taskId}`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
         updateSingleFacultyTask: build.mutation({
             query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
                 url: `${Faculty_URL}/${id}/${taskId}`,
@@ -181,5 +229,9 @@ export const
         useTaskHintCreateMutation,
         useGetSingleTaskHintQuery,
         useUpdateSingleTaskHintMutation,
-        useDeleteTaskHintMutation
+        useDeleteTaskHintMutation,
+        useGetUnassignTaskStudentListQuery,
+        useAssignTaskStudentMutation,
+        useGetAssignTaskStudentListQuery,
+        useUnassignTaskStudentMutation
     } = facultyApi

@@ -33,7 +33,7 @@ const EnrolledStudentList = () => {
   query["sortBy"] = sortBy;
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
-  console.log(interests);
+
   if (interests?.length > 0) {
     query["interests"] = interests;
   }
