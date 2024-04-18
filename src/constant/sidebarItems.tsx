@@ -417,23 +417,23 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/assigned-task-list`}
+              href={`/${role}/task/assigned-task`}
             >
               Assigned Task
             </Link>
           ),
-          key: `/${role}/assigned-task-list`,
+          key: `/${role}/task/assigned-task`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/completed-task-list`}
+              href={`/${role}/task/completed-task`}
             >
               Completed Task
             </Link>
           ),
-          key: `/${role}/completed-task-list`,
+          key: `/${role}/task/completed-task`,
         },
       ],
     },

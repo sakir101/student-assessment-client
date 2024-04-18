@@ -68,5 +68,7 @@ export interface ITask {
     solution: string | null;
     createdAt: string;
     updatedAt: string;
+    facultyId: string;
+    faculty: IFaculty;
     hint: string[];
 }

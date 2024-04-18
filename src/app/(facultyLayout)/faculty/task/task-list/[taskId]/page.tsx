@@ -6,10 +6,12 @@ import { getUserInfo } from "@/services/auth.service";
 import { useGetSingleSpecificFacultyTaskQuery } from "@/redux/api/facultyApi";
 import Loading from "@/app/loading";
 import Link from "next/link";
+import DOMPurify from "dompurify";
 
 const SingleTask = () => {
   const query: Record<string, any> = {};
   const [taskId, setTaskId] = useState<string>("");
+  const [cont, setCont] = useState<string>("");
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,6 +31,36 @@ const SingleTask = () => {
     { id, taskId },
     { refetchOnMountOrArgChange: true }
   );
+
+  const renderHtmlWithCodeBlocks = (htmlContent: string) => {
+    if (!htmlContent) {
+      return null;
+    }
+
+    const parts = htmlContent.split(/(<pre[^>]*>[\s\S]*?<\/pre>)/g);
+
+    return parts.map((part, index) => {
+      const sanitizedHtmlContent = DOMPurify.sanitize(part);
+      if (sanitizedHtmlContent.startsWith("<pre")) {
+        return (
+          <div key={index}>
+            <div
+              className="bg-gray-900 text-white p-5 rounded-md"
+              dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
+            />
+          </div>
+        );
+      }
+      return (
+        <span
+          key={index}
+          dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
+        />
+      );
+    });
+  };
+
+  console.log(cont);
 
   return (
     <div className="mt-3 lg:mt-3 p-5">
@@ -58,7 +90,7 @@ const SingleTask = () => {
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
                   <p>
                     <span className="font-bold">Task Description: </span>
-                    <span>{data?.description}</span>
+                    {renderHtmlWithCodeBlocks(data?.description)}
                   </p>
                 </div>
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
@@ -77,7 +109,8 @@ const SingleTask = () => {
                   {data?.solution !== null ? (
                     <p>
                       <span className="font-bold">Task Solution: </span>
-                      <span>{data?.solution}</span>
+
+                      {renderHtmlWithCodeBlocks(data?.solution)}
                     </p>
                   ) : (
                     <p className="font-bold">Task Solution Not Assigned</p>

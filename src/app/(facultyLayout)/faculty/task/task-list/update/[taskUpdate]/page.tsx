@@ -20,10 +20,50 @@ import {
   DeleteOutlined,
   ExclamationCircleFilled,
 } from "@ant-design/icons";
+import dynamic from "next/dynamic";
+import { useForm } from "react-hook-form";
+import "react-quill/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "code-block"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "code-block",
+  "list",
+  "link",
+  "color", // Add color option
+  "background", // Add background color option
+  "align", // Add text alignment option
+];
 
 const { confirm } = Modal;
 const TaskUpdate = () => {
   const query: Record<string, any> = {};
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
@@ -33,6 +73,9 @@ const TaskUpdate = () => {
   const [form] = Form.useForm();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [description, setDescription] = useState("");
+  const [solution, setSolution] = useState("");
+  const [formError, setError] = useState<string>("");
 
   useEffect(() => {
     const url = `${pathname}?${searchParams}`;
@@ -49,6 +92,13 @@ const TaskUpdate = () => {
     { id, taskId },
     { refetchOnMountOrArgChange: true }
   );
+
+  useEffect(() => {
+    setDescription(data?.description);
+    setSolution(data?.solution);
+  }, [data]);
+
+  console.log(description);
 
   const { data: hintData } = useGetSingleTaskHintQuery(hintId, {
     refetchOnMountOrArgChange: true,
@@ -67,21 +117,35 @@ const TaskUpdate = () => {
     form1.setFieldsValue({ description: hintData?.description });
   }, [form1, hintData]);
 
-  const updateTask = async (data: any) => {
+  const updateTask = async (value: any) => {
+    if (description.length < 100) {
+      setError("Required, Add description minimum length 100 characters");
+      return;
+    }
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
 
-    updateSingleFacultyTask({ data, id, taskId })
-      .unwrap()
-      .then(() => {
-        message.success("Task updated successfully");
-      })
-      .catch((err) => {
-        message.error("Failed to update task");
-      })
-      .finally(() => {
-        message.destroy(key);
-      });
+    const data = {
+      title: value.title,
+      description,
+      solution,
+    };
+    setError("");
+    try {
+      updateSingleFacultyTask({ data, id, taskId })
+        .unwrap()
+        .then(() => {
+          message.success("Task updated successfully");
+        })
+        .catch((err) => {
+          message.error("Failed to update task");
+        })
+        .finally(() => {
+          message.destroy(key);
+        });
+    } catch (error) {
+      throw error;
+    }
   };
 
   const showModal = () => {
@@ -189,12 +253,6 @@ const TaskUpdate = () => {
     setIsModalOpen2(false);
   };
 
-  const defaultValues = {
-    title: data?.title,
-    description: data?.description,
-    solution: data?.solution || "",
-  };
-
   return (
     <div className="flex justify-center items-center w-full">
       <div className="w-4/5 lg:w-1/2">
@@ -207,43 +265,52 @@ const TaskUpdate = () => {
           Update your task
         </h1>
         <div>
-          <CForm submitHandler={updateTask} defaultValues={defaultValues}>
+          <form onSubmit={handleSubmit(updateTask)}>
             <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md">
-              <FormInput
-                name="title"
+              <label className="font-weight-bold"> Title</label>
+              <br />
+              <input
+                className="input input-bordered w-full h-10"
                 type="text"
-                size="large"
-                label="Title"
-                required
+                defaultValue={data?.title}
+                disabled
               />
             </div>
             <div
-              className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md"
-              style={{
-                margin: "15px 0px",
-              }}
+              className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md form-group  row"
+              style={{ margin: "15px 0px" }}
             >
-              <FormTextArea
-                name="description"
-                rows={7}
-                label="Description"
-                required
+              <label className="font-weight-bold"> Description</label>
+              <ReactQuill
+                className="bg-white rounded-md"
+                value={description}
+                onChange={setDescription}
+                modules={modules}
+                formats={formats}
+                placeholder={"Write something awesome..."}
               />
+              {formError && <p className="text-red-500">{formError}</p>}
             </div>
             <div
-              className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md"
-              style={{
-                margin: "15px 0px",
-              }}
+              className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md form-group  row"
+              style={{ margin: "15px 0px" }}
             >
-              <FormTextArea name="solution" rows={4} label="Solution" />
+              <label className="font-weight-bold">Solution</label>
+              <ReactQuill
+                className="bg-white rounded-md"
+                value={solution}
+                onChange={setSolution}
+                modules={modules}
+                formats={formats}
+                placeholder={"Write something awesome..."}
+              />
             </div>
             <div className="flex justify-center">
-              <Button type="primary" htmlType="submit">
-                Update
-              </Button>
+              <button type="submit" className="btn btn-primary">
+                Submit
+              </button>
             </div>
-          </CForm>
+          </form>
         </div>
         <div className="border-solid border-2  border-slate-500 p-5 my-4">
           <h1 className="text-center text-xl text-blue-500 font-semibold">

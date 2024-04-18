@@ -1,4 +1,4 @@
-import { IFaculty, IInterest, IMeta } from "@/types";
+import { IFaculty, IInterest, IMeta, ITask } from "@/types";
 import { tagTypes } from "../tag-types"
 import { baseApi } from "./baseApi"
 
@@ -70,6 +70,21 @@ export const studentApi = baseApi.injectEndpoints({
             }),
             providesTags: [tagTypes.student],
         }),
+
+        getAllSpecificIncompleteStudentTask: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Student_URL}/getAllSpecificIncompleteTask/incomplete/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: ITask[], meta: IMeta) => {
+                return {
+                    task: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
     }),
 })
 
@@ -79,5 +94,6 @@ export const {
     useGetAssignInterestQuery,
     useEnrollFacultyMutation,
     useGetEnrollFacultyQuery,
-    useGetSingleStudentByStudentIdQuery
+    useGetSingleStudentByStudentIdQuery,
+    useGetAllSpecificIncompleteStudentTaskQuery
 } = studentApi
