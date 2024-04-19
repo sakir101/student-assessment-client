@@ -6,7 +6,7 @@ import { useGetCreatedTasksQuery } from "@/redux/api/facultyApi";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, Modal, Pagination, Select, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { timeOptions } from "@/constant/global";
 import Link from "next/link";
 
@@ -15,8 +15,8 @@ const { confirm } = Modal;
 const TaskList = () => {
   const query: Record<string, any> = {};
 
-  const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(4);
+  const [page, setPage] = useState<number>();
+  const [size, setSize] = useState<number>();
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -66,6 +66,11 @@ const TaskList = () => {
   const taskData = data?.task;
   const meta = data?.meta;
 
+  useEffect(() => {
+    setSize(meta?.limit);
+    setPage(meta?.page);
+  }, [meta]);
+
   const handlePageChange = (currentPage: number) => {
     setPage(currentPage);
   };
@@ -108,8 +113,8 @@ const TaskList = () => {
   };
 
   const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
+    setCreatedAt("");
+    setUpdatedAt("");
     setSearchTerm("");
   };
   return (
@@ -133,7 +138,7 @@ const TaskList = () => {
                     setSearchTerm(e.target.value);
                   }}
                 />
-                {(!!sortBy || !!sortOrder || !!searchTerm) && (
+                {(!!createdAt || !!updatedAt || !!searchTerm) && (
                   <Button
                     onClick={resetFilters}
                     type="primary"

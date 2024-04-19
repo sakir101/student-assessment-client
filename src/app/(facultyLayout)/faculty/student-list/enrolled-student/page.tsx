@@ -2,7 +2,7 @@
 
 import { Button, Input, message, Modal, Select } from "antd";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReloadOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 
 import Image from "next/image";
@@ -19,8 +19,8 @@ import SATable from "@/components/ui/Table";
 const EnrolledStudentList = () => {
   const query: Record<string, any> = {};
 
-  const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(10);
+  const [page, setPage] = useState<number>();
+  const [size, setSize] = useState<number>();
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -83,6 +83,12 @@ const EnrolledStudentList = () => {
   }));
 
   const meta = data?.meta;
+
+  useEffect(() => {
+    setSize(meta?.limit);
+    setPage(meta?.page);
+  }, [meta]);
+
   const handleChange = (value: string) => {
     setInterests(value);
   };
@@ -110,13 +116,11 @@ const EnrolledStudentList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      sorter: true,
     },
     {
       title: "University",
       dataIndex: "institute",
       key: "institute",
-      sorter: true,
       responsive: ["lg"],
     },
     {
@@ -147,6 +151,8 @@ const EnrolledStudentList = () => {
     setSortBy("");
     setSortOrder("");
     setSearchTerm("");
+    setInstitution("");
+    setInterests("");
   };
 
   return (
@@ -171,7 +177,11 @@ const EnrolledStudentList = () => {
                     setSearchTerm(e.target.value);
                   }}
                 />
-                {(!!sortBy || !!sortOrder || !!searchTerm) && (
+                {(!!sortBy ||
+                  !!sortOrder ||
+                  !!searchTerm ||
+                  !!interests ||
+                  !!institution) && (
                   <Button
                     onClick={resetFilters}
                     type="primary"

@@ -31,8 +31,8 @@ const TaskList = () => {
   const query: Record<string, any> = {};
   const query1: Record<string, any> = {};
 
-  const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(4);
+  const [page, setPage] = useState<number>();
+  const [size, setSize] = useState<number>();
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -108,6 +108,11 @@ const TaskList = () => {
 
   const taskData = data?.task;
   const meta = data?.meta;
+
+  useEffect(() => {
+    setSize(meta?.limit);
+    setPage(meta?.page);
+  }, [meta]);
 
   const { data: studentData, isLoading: loading } =
     useGetUnassignTaskStudentListQuery(
@@ -271,12 +276,12 @@ const TaskList = () => {
   };
 
   const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
     setSearchTerm("");
     setInterests("");
     setInstitution("");
     setSearchTerm1("");
+    setCreatedAt("");
+    setUpdatedAt("");
   };
   return (
     <div className="p-4">
@@ -299,7 +304,7 @@ const TaskList = () => {
                     setSearchTerm(e.target.value);
                   }}
                 />
-                {(!!sortBy || !!sortOrder || !!searchTerm) && (
+                {(!!createdAt || !!updatedAt || !!searchTerm) && (
                   <Button
                     onClick={resetFilters}
                     type="primary"
