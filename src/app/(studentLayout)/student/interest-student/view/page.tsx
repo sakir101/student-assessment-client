@@ -4,7 +4,7 @@ import { useGetAssignInterestQuery } from "@/redux/api/studentApi";
 import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, message, Modal } from "antd";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DeleteOutlined,
   ReloadOutlined,
@@ -20,8 +20,8 @@ const { confirm } = Modal;
 const AssignInterestView = () => {
   const query: Record<string, any> = {};
 
-  const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(10);
+  const [page, setPage] = useState<number>();
+  const [size, setSize] = useState<number>();
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -56,6 +56,11 @@ const AssignInterestView = () => {
 
   const interestData = data?.interest;
   const meta = data?.meta;
+
+  useEffect(() => {
+    setSize(meta?.limit);
+    setPage(meta?.page);
+  }, [meta]);
 
   const showModal = async (id: string) => {
     setIsModalOpen(true);

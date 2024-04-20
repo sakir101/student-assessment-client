@@ -2,7 +2,7 @@
 
 import { Button, Input, message, Modal, Select } from "antd";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DeleteOutlined,
   ReloadOutlined,
@@ -25,8 +25,8 @@ const { confirm } = Modal;
 const SuggestedFacultyList = () => {
   const query: Record<string, any> = {};
 
-  const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(10);
+  const [page, setPage] = useState<number>();
+  const [size, setSize] = useState<number>();
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -91,6 +91,12 @@ const SuggestedFacultyList = () => {
   }));
 
   const meta = data?.meta;
+
+  useEffect(() => {
+    setSize(meta?.limit);
+    setPage(meta?.page);
+  }, [meta]);
+
   const handleChange = (value: string) => {
     setInterestFaculty(value);
   };
@@ -153,13 +159,11 @@ const SuggestedFacultyList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      sorter: true,
     },
     {
       title: "University",
       dataIndex: "institute",
       key: "institute",
-      sorter: true,
     },
     {
       title: "Account View",
@@ -198,8 +202,8 @@ const SuggestedFacultyList = () => {
   };
 
   const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
+    setInstitution("");
+    setInterestFaculty("");
     setSearchTerm("");
   };
 
@@ -225,7 +229,11 @@ const SuggestedFacultyList = () => {
                     setSearchTerm(e.target.value);
                   }}
                 />
-                {(!!sortBy || !!sortOrder || !!searchTerm) && (
+                {(!!sortBy ||
+                  !!sortOrder ||
+                  !!searchTerm ||
+                  !!InterestFaculty ||
+                  !!institution) && (
                   <Button
                     onClick={resetFilters}
                     type="primary"
