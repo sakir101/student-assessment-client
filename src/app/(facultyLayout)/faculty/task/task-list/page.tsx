@@ -31,6 +31,12 @@ const TaskList = () => {
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
 
+  useEffect(() => {
+    if (searchTerm) {
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   if (createdAt?.length > 0) {
     query["createdAt"] = createdAt;
   }
@@ -48,10 +54,12 @@ const TaskList = () => {
   }
 
   const handleChangeCreatedAt = (value: string) => {
+    setPage(1);
     setCreatedAt(value);
   };
 
   const handleChangeUpdatedAt = (value: string) => {
+    setPage(1);
     setUpdatedAt(value);
   };
 

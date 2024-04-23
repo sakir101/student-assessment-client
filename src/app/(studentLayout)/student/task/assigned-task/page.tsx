@@ -31,6 +31,12 @@ const AssignedTaskList = () => {
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
 
+  useEffect(() => {
+    if (searchTerm) {
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   if (facultyOption?.length > 0) {
     query["facultyId"] = facultyOption;
   }
@@ -76,8 +82,6 @@ const AssignedTaskList = () => {
 
   const facultyList = facultyData?.faculty;
 
-  console.log(facultyList);
-
   const facultyNewData = facultyList?.map((facultyItem: any) => ({
     id: facultyItem.id ?? "",
     name: `${facultyItem.firstName ?? ""} ${facultyItem.middleName ?? ""} ${
@@ -93,6 +97,7 @@ const AssignedTaskList = () => {
   });
 
   const handleFacultyChange = (value: string) => {
+    setPage(1);
     setFacultyOption(value);
   };
   const handlePageChange = (currentPage: number) => {
@@ -177,12 +182,12 @@ const AssignedTaskList = () => {
               </p>
             </div>
             <div className="flex justify-center items-center my-3">
-              <Link href={`/faculty/task/task-list/update/${item?.id}`}>
+              <Link href={`/student/task/update/${item?.id}`}>
                 <button className="btn btn-sm bg-blue-300  hover:to-blue-600 border-blue-300 mr-4">
                   Edit
                 </button>
               </Link>
-              <Link href={`/faculty/task/task-list/${item?.id}`}>
+              <Link href={`/student/task/${item?.id}`}>
                 <button className="btn btn-sm bg-white-400">View</button>
               </Link>
             </div>

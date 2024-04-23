@@ -34,6 +34,12 @@ const EnrolledStudentList = () => {
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
 
+  useEffect(() => {
+    if (searchTerm) {
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   if (interests?.length > 0) {
     query["interests"] = interests;
   }
@@ -90,10 +96,12 @@ const EnrolledStudentList = () => {
   }, [meta]);
 
   const handleChange = (value: string) => {
+    setPage(1);
     setInterests(value);
   };
 
   const handleChangeUniversity = (value: string) => {
+    setPage(1);
     setInstitution(value);
   };
 

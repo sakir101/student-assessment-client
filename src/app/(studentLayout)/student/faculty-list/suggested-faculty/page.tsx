@@ -39,7 +39,13 @@ const SuggestedFacultyList = () => {
   query["sortBy"] = sortBy;
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
-  console.log(InterestFaculty);
+
+  useEffect(() => {
+    if (searchTerm) {
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   if (InterestFaculty?.length > 0) {
     query["InterestFaculty"] = InterestFaculty;
   }
@@ -98,12 +104,15 @@ const SuggestedFacultyList = () => {
   }, [meta]);
 
   const handleChange = (value: string) => {
+    setPage(1);
     setInterestFaculty(value);
   };
 
   const handleChangeUniversity = (value: string) => {
+    setPage(1);
     setInstitution(value);
   };
+
   const showModal = async (id: string) => {
     setIsModalOpen(true);
     confirm({

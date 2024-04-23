@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { getUserInfo } from "@/services/auth.service";
-import { useGetSingleSpecificFacultyTaskQuery } from "@/redux/api/facultyApi";
 import Loading from "@/app/loading";
-import Link from "next/link";
+import { useGetSingleSpecificStudentTaskQuery } from "@/redux/api/studentApi";
+import { getUserInfo } from "@/services/auth.service";
 import DOMPurify from "dompurify";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Collapse } from "antd";
 
-const SingleTask = () => {
+const SingleTaskStudent = () => {
   const query: Record<string, any> = {};
   const [taskId, setTaskId] = useState<string>("");
-  const [cont, setCont] = useState<string>("");
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -27,10 +27,12 @@ const SingleTask = () => {
 
   const { userId: id } = getUserInfo() as any;
 
-  const { data, isLoading, refetch } = useGetSingleSpecificFacultyTaskQuery(
+  const { data, isLoading, refetch } = useGetSingleSpecificStudentTaskQuery(
     { id, taskId },
     { refetchOnMountOrArgChange: true }
   );
+
+  console.log(data);
 
   const renderHtmlWithCodeBlocks = (htmlContent: string) => {
     if (!htmlContent) {
@@ -68,10 +70,10 @@ const SingleTask = () => {
         <>
           {Object.keys(data || {}).length > 0 && (
             <div>
-              <div className="flex justify-end">
-                <Link href={`/faculty/task/task-list/update/${data?.id}`}>
+              <div className="flex justify-center">
+                <Link href={`/student/task/update/${data?.task?.id}`}>
                   <button className="btn btn-sm bg-blue-300  hover:to-blue-600 border-blue-300">
-                    Update
+                    Add Solution
                   </button>
                 </Link>
               </div>
@@ -82,34 +84,48 @@ const SingleTask = () => {
                     margin: "15px 0px",
                   }}
                 >
-                  {data?.title}
+                  {data?.task?.title}
                 </h1>
 
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
                   <p>
                     <span className="font-bold">Task Description: </span>
-                    {renderHtmlWithCodeBlocks(data?.description)}
+                    {renderHtmlWithCodeBlocks(data?.task?.description)}
                   </p>
                 </div>
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
-                  {data?.hint?.length > 0 ? (
-                    data?.hint.map((hintItem: any, index: number) => (
-                      <p key={index}>
-                        <span>Hint {index + 1}: </span>
-                        <span>{hintItem?.description}</span>
-                      </p>
+                  {data?.tasK?.hint?.length > 0 ? (
+                    data.hint.map((hintItem: any, index: number) => (
+                      <Collapse
+                        key={hintItem.id}
+                        items={[
+                          {
+                            key: index.toString(),
+                            label: `Hint ${index + 1}`,
+                            children: <p>{hintItem?.description}</p>,
+                          },
+                        ]}
+                      />
                     ))
                   ) : (
                     <p className="font-bold">Task Hint Not Assigned</p>
                   )}
                 </div>
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
-                  {data?.solution?.length > 0 ? (
-                    <p>
-                      <span className="font-bold">Task Solution: </span>
-
-                      {renderHtmlWithCodeBlocks(data?.solution)}
-                    </p>
+                  {data?.task?.solution?.length > 0 ? (
+                    <Collapse
+                      items={[
+                        {
+                          key: "1",
+                          label: (
+                            <span className="font-bold">Task Solution:</span>
+                          ),
+                          children: renderHtmlWithCodeBlocks(
+                            data?.task.solution
+                          ),
+                        },
+                      ]}
+                    />
                   ) : (
                     <p className="font-bold">Task Solution Not Assigned</p>
                   )}
@@ -123,4 +139,4 @@ const SingleTask = () => {
   );
 };
 
-export default SingleTask;
+export default SingleTaskStudent;

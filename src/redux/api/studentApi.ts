@@ -83,7 +83,39 @@ export const studentApi = baseApi.injectEndpoints({
                     meta,
                 };
             },
-            providesTags: [tagTypes.faculty],
+            providesTags: [tagTypes.student],
+        }),
+
+        getSingleSpecificStudentTask: build.query({
+            query: ({ id, taskId }: { id: any, taskId: string }) => ({
+                url: `${Student_URL}/${id}/${taskId}`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.student],
+        }),
+
+        updateSingleStudentTask: build.mutation({
+            query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
+                url: `${Student_URL}/${id}/${taskId}`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.student],
+        }),
+
+        getAllSpecificCompleteStudentTask: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Student_URL}/getAllSpecificCompleteTask/complete/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: ITask[], meta: IMeta) => {
+                return {
+                    task: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.student],
         }),
     }),
 })
@@ -95,5 +127,8 @@ export const {
     useEnrollFacultyMutation,
     useGetEnrollFacultyQuery,
     useGetSingleStudentByStudentIdQuery,
-    useGetAllSpecificIncompleteStudentTaskQuery
+    useGetAllSpecificIncompleteStudentTaskQuery,
+    useGetSingleSpecificStudentTaskQuery,
+    useUpdateSingleStudentTaskMutation,
+    useGetAllSpecificCompleteStudentTaskQuery
 } = studentApi

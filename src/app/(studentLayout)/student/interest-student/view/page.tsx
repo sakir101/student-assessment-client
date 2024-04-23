@@ -35,6 +35,12 @@ const AssignInterestView = () => {
   query["sortOrder"] = sortOrder;
   query["searchTerm"] = searchTerm;
 
+  useEffect(() => {
+    if (searchTerm) {
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,

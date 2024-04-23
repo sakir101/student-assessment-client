@@ -98,8 +98,6 @@ const TaskUpdate = () => {
     setSolution(data?.solution);
   }, [data]);
 
-  console.log(description);
-
   const { data: hintData } = useGetSingleTaskHintQuery(hintId, {
     refetchOnMountOrArgChange: true,
   });
@@ -280,7 +278,7 @@ const TaskUpdate = () => {
               className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md form-group  row"
               style={{ margin: "15px 0px" }}
             >
-              <label className="font-weight-bold"> Description</label>
+              <label className="font-weight-bold">Description</label>
               <ReactQuill
                 className="bg-white rounded-md"
                 value={description}

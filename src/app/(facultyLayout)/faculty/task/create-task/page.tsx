@@ -35,9 +35,9 @@ const formats = [
   "code-block",
   "list",
   "link",
-  "color", // Add color option
-  "background", // Add background color option
-  "align", // Add text alignment option
+  "color",
+  "background",
+  "align",
 ];
 
 const CreateTask = () => {
@@ -62,6 +62,9 @@ const CreateTask = () => {
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
     const { userId } = getUserInfo() as any;
+    if (solution.length === 0) {
+      setSolution("");
+    }
     const data = {
       title: value.title,
       description,
@@ -126,7 +129,7 @@ const CreateTask = () => {
                 onChange={setDescription}
                 modules={modules}
                 formats={formats}
-                placeholder={"Write something awesome..."}
+                placeholder={"Write Description"}
               />
               {isError && <p className="text-red-500">{isError}</p>}
             </div>
@@ -141,7 +144,7 @@ const CreateTask = () => {
                 onChange={setSolution}
                 modules={modules}
                 formats={formats}
-                placeholder={"Write something awesome..."}
+                placeholder={"Write Solution"}
               />
             </div>
             <div className="flex justify-center">
