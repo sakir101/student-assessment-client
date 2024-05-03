@@ -7,6 +7,39 @@ import { useGetSingleSpecificFacultyTaskQuery } from "@/redux/api/facultyApi";
 import Loading from "@/app/loading";
 import Link from "next/link";
 import DOMPurify from "dompurify";
+import "react-quill/dist/quill.bubble.css";
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "code-block"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "code-block",
+  "list",
+  "link",
+  "color",
+  "background",
+  "align",
+];
 
 const SingleTask = () => {
   const query: Record<string, any> = {};
@@ -76,43 +109,54 @@ const SingleTask = () => {
                 </Link>
               </div>
               <div className="flex flex-col justify-center items-center">
-                <h1
-                  className="text-center text-xl text-blue-500 font-semibold"
-                  style={{
-                    margin: "15px 0px",
-                  }}
-                >
-                  {data?.title}
-                </h1>
+                <div className="w-full lg:w-3/4">
+                  <h1
+                    className="text-center text-xl text-blue-500 font-semibold"
+                    style={{
+                      margin: "15px 0px",
+                    }}
+                  >
+                    {data?.title}
+                  </h1>
 
-                <div className="p-5 bg-slate-300 rounded-md mb-4">
-                  <p>
-                    <span className="font-bold">Task Description: </span>
-                    {renderHtmlWithCodeBlocks(data?.description)}
-                  </p>
-                </div>
-                <div className="p-5 bg-slate-300 rounded-md mb-4">
-                  {data?.hint?.length > 0 ? (
-                    data?.hint.map((hintItem: any, index: number) => (
-                      <p key={index}>
-                        <span>Hint {index + 1}: </span>
-                        <span>{hintItem?.description}</span>
-                      </p>
-                    ))
-                  ) : (
-                    <p className="font-bold">Task Hint Not Assigned</p>
-                  )}
-                </div>
-                <div className="p-5 bg-slate-300 rounded-md mb-4">
-                  {data?.solution?.length > 0 ? (
+                  <div className="p-5 bg-slate-300 rounded-md mb-4">
                     <p>
-                      <span className="font-bold">Task Solution: </span>
-
-                      {renderHtmlWithCodeBlocks(data?.solution)}
+                      <span className="font-bold">Task Description: </span>
+                      <ReactQuill
+                        value={data?.description}
+                        readOnly={true}
+                        theme={"bubble"}
+                      />
+                      {/* {renderHtmlWithCodeBlocks(data?.description)} */}
                     </p>
-                  ) : (
-                    <p className="font-bold">Task Solution Not Assigned</p>
-                  )}
+                  </div>
+                  <div className="p-5 bg-slate-300 rounded-md mb-4">
+                    {data?.hint?.length > 0 ? (
+                      data?.hint.map((hintItem: any, index: number) => (
+                        <p key={index}>
+                          <span>Hint {index + 1}: </span>
+                          <span>{hintItem?.description}</span>
+                        </p>
+                      ))
+                    ) : (
+                      <p className="font-bold">Task Hint Not Assigned</p>
+                    )}
+                  </div>
+                  <div className="p-5 bg-slate-300 rounded-md mb-4">
+                    {data?.solution?.length > 0 ? (
+                      <p>
+                        <span className="font-bold">Task Solution: </span>
+                        <ReactQuill
+                          value={data?.solution}
+                          readOnly={true}
+                          theme={"bubble"}
+                        />
+                        {/* {renderHtmlWithCodeBlocks(data?.solution)} */}
+                      </p>
+                    ) : (
+                      <p className="font-bold">Task Solution Not Assigned</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

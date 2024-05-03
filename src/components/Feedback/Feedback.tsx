@@ -11,6 +11,39 @@ import { useGetSpecificFeedbackTaskQuery } from "@/redux/api/studentApi";
 import { getUserInfo } from "@/services/auth.service";
 import { Input, Select, message } from "antd";
 import { useEffect, useState } from "react";
+import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "code-block"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "code-block",
+  "list",
+  "link",
+  "color",
+  "background",
+  "align",
+];
 
 const Feedback = ({
   studentUserId,
@@ -40,6 +73,10 @@ const Feedback = ({
     { id: studentUserId, taskId },
     { refetchOnMountOrArgChange: true }
   );
+
+  useEffect(() => {
+    setComment(taskFeedback?.comment);
+  }, [taskFeedback]);
 
   useEffect(() => {
     setFacultyId(facultyData?.id);
@@ -205,14 +242,22 @@ const Feedback = ({
           </div>
           <div className="w-full flex justify-center my-3">
             <div className="w-1/2">
-              <input
+              <ReactQuill
+                className="bg-white rounded-md"
+                value={comment}
+                onChange={setComment}
+                modules={modules}
+                formats={formats}
+                placeholder={"Write Feedback"}
+              />
+              {/* <input
                 className="input input-bordered input-primary w-full"
                 type="text"
                 defaultValue={taskFeedback?.comment}
                 onChange={(e) => {
                   setComment(e.target.value);
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="flex justify-center">
@@ -236,13 +281,13 @@ const Feedback = ({
           </div>
           <div className="w-full flex justify-center my-3">
             <div className="w-1/2">
-              <Input
-                type="text"
-                size="large"
-                placeholder="Write Feedback"
-                onChange={(e) => {
-                  setComment(e.target.value);
-                }}
+              <ReactQuill
+                className="bg-white rounded-md"
+                value={comment}
+                onChange={setComment}
+                modules={modules}
+                formats={formats}
+                placeholder={"Write Feedback"}
               />
             </div>
           </div>

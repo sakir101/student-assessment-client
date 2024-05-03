@@ -2,19 +2,17 @@
 
 import Loading from "@/app/loading";
 import {
-  useGetAllSpecificIncompleteStudentTaskQuery,
+  useGetAllFeedbackTaskQuery,
   useGetEnrollFacultyQuery,
 } from "@/redux/api/studentApi";
 import { ReloadOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
-import Input from "antd/es/input/Input";
-import { Button } from "antd/es/radio";
+import { Button, Input, Pagination, Select } from "antd";
 import { useEffect, useState } from "react";
-import { Pagination, Select } from "antd";
 import Link from "next/link";
 
-const AssignedTaskList = () => {
+const TaskFeedback = () => {
   const query: Record<string, any> = {};
   const query1: Record<string, any> = {};
 
@@ -52,14 +50,13 @@ const AssignedTaskList = () => {
 
   const { userId } = getUserInfo() as any;
 
-  const { data, isLoading, refetch } =
-    useGetAllSpecificIncompleteStudentTaskQuery(
-      {
-        id: userId,
-        arg: query,
-      },
-      { refetchOnMountOrArgChange: true }
-    );
+  const { data, isLoading, refetch } = useGetAllFeedbackTaskQuery(
+    {
+      id: userId,
+      arg: query,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const taskData = data?.task;
   const meta = data?.meta;
@@ -113,11 +110,10 @@ const AssignedTaskList = () => {
     setFacultyOption("");
     setSearchTerm("");
   };
-
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Your assigned task list
+        Your task feedback
       </h1>
       <div className="flex justify-center items-center mt-5 lg:mt-7">
         {isLoading ? (
@@ -180,13 +176,10 @@ const AssignedTaskList = () => {
               </p>
             </div>
             <div className="flex justify-center items-center my-3">
-              <Link href={`/student/task/update/${item?.id}`}>
+              <Link href={`/student/task/showFeedback/${item?.id}`}>
                 <button className="btn btn-sm bg-blue-300  hover:to-blue-600 border-blue-300 mr-4">
-                  Edit
+                  View Feedback
                 </button>
-              </Link>
-              <Link href={`/student/task/${item?.id}`}>
-                <button className="btn btn-sm bg-white-400">View</button>
               </Link>
             </div>
           </div>
@@ -203,5 +196,4 @@ const AssignedTaskList = () => {
     </div>
   );
 };
-
-export default AssignedTaskList;
+export default TaskFeedback;

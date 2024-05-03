@@ -435,6 +435,17 @@ export const sidebarItems = (role: string) => {
           ),
           key: `/${role}/task/completed-task`,
         },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/task/task-feedback`}
+            >
+              Task Feedback
+            </Link>
+          ),
+          key: `/${role}/task/task-feedback`,
+        },
       ],
     },
   ];

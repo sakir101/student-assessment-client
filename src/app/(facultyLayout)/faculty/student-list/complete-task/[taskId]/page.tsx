@@ -4,9 +4,42 @@ import Loading from "@/app/loading";
 import Feedback from "@/components/Feedback/Feedback";
 import { useGetAllCompleteTaskStudentsQuery } from "@/redux/api/facultyApi";
 import DOMPurify from "dompurify";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import "react-quill/dist/quill.bubble.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "code-block"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "code-block",
+  "list",
+  "link",
+  "color",
+  "background",
+  "align",
+];
 
 const CompleteTaskStudent = () => {
   const [taskId, setTaskId] = useState<string>("");
@@ -81,7 +114,12 @@ const CompleteTaskStudent = () => {
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
                   <p>
                     <span className="font-bold">Task Description: </span>
-                    {renderHtmlWithCodeBlocks(data[0]?.task.description)}
+                    <ReactQuill
+                      value={data[0]?.task.description}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
+                    {/* {renderHtmlWithCodeBlocks(data[0]?.task.description)} */}
                   </p>
                 </div>
               </div>
@@ -113,7 +151,12 @@ const CompleteTaskStudent = () => {
                     <div className="p-5 bg-slate-400 rounded-md my-4">
                       <p>
                         <span className="font-bold">Task Solution: </span>
-                        {renderHtmlWithCodeBlocks(item?.solution)}
+                        <ReactQuill
+                          value={item?.solution}
+                          readOnly={true}
+                          theme={"bubble"}
+                        />
+                        {/* {renderHtmlWithCodeBlocks(item?.solution)} */}
                       </p>
                     </div>
                     <div className="bg-gray-300 my-3">

@@ -8,9 +8,41 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Collapse } from "antd";
+import "react-quill/dist/quill.bubble.css";
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "code-block"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "code-block",
+  "list",
+  "link",
+  "color",
+  "background",
+  "align",
+];
 
 const SingleTaskStudent = () => {
-  const query: Record<string, any> = {};
   const [taskId, setTaskId] = useState<string>("");
 
   const pathname = usePathname();
@@ -31,8 +63,6 @@ const SingleTaskStudent = () => {
     { id, taskId },
     { refetchOnMountOrArgChange: true }
   );
-
-  console.log(data);
 
   const renderHtmlWithCodeBlocks = (htmlContent: string) => {
     if (!htmlContent) {
@@ -69,8 +99,8 @@ const SingleTaskStudent = () => {
       ) : (
         <>
           {Object.keys(data || {}).length > 0 && (
-            <div>
-              <div className="flex justify-center">
+            <div className="flex flex-col justify-center">
+              <div className="w-full lg:w-3/4">
                 <Link href={`/student/task/update/${data?.task?.id}`}>
                   <button className="btn btn-sm bg-blue-300  hover:to-blue-600 border-blue-300">
                     Add Solution
@@ -90,12 +120,17 @@ const SingleTaskStudent = () => {
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
                   <p>
                     <span className="font-bold">Task Description: </span>
-                    {renderHtmlWithCodeBlocks(data?.task?.description)}
+                    <ReactQuill
+                      value={data?.task?.description}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
+                    {/* {renderHtmlWithCodeBlocks(data?.task?.description)} */}
                   </p>
                 </div>
                 <div className="p-5 bg-slate-300 rounded-md mb-4">
-                  {data?.tasK?.hint?.length > 0 ? (
-                    data.hint.map((hintItem: any, index: number) => (
+                  {data?.task?.hint?.length > 0 ? (
+                    data?.task?.hint.map((hintItem: any, index: number) => (
                       <Collapse
                         key={hintItem.id}
                         items={[
@@ -120,8 +155,12 @@ const SingleTaskStudent = () => {
                           label: (
                             <span className="font-bold">Task Solution:</span>
                           ),
-                          children: renderHtmlWithCodeBlocks(
-                            data?.task.solution
+                          children: (
+                            <ReactQuill
+                              value={data?.task?.solution}
+                              readOnly={true}
+                              theme={"bubble"}
+                            />
                           ),
                         },
                       ]}
