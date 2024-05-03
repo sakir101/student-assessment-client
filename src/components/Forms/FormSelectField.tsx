@@ -64,6 +64,7 @@ const FormSelectField = ({
             value={value}
             style={{ width: "100%" }}
             placeholder={placeholder}
+            defaultValue={defaultValue}
           />
         )}
       />

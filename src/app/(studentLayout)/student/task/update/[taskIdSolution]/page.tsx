@@ -96,7 +96,7 @@ const TaskAddSolution = () => {
         return (
           <div key={index}>
             <div
-              className="bg-gray-900 text-white p-5 rounded-md"
+              className="bg-gray-900 text-white rounded-md overflow-x-auto p-5"
               dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
             />
           </div>

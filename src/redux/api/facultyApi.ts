@@ -156,9 +156,41 @@ export const facultyApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.faculty],
         }),
 
+        getAllCompleteStudentTasks: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Faculty_URL}/getAllSpecificCompleteTask/complete/student/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: ITask[], meta: IMeta) => {
+                return {
+                    task: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
+
+        getAllCompleteTaskStudents: build.query({
+            query: (taskId: string | string[] | undefined) => ({
+                url: `${Faculty_URL}/getAllSpecificCompleteTaskStudents/complete/task/${taskId}`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.faculty],
+        }),
+
         assignTaskStudent: build.mutation({
             query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
                 url: `${Faculty_URL}/assignTask/${id}/${taskId}`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
+        assignTaskFeedback: build.mutation({
+            query: ({ data, taskId, facultyId, studentId }: { data: any; taskId: string, facultyId: string; studentId: string }) => ({
+                url: `${Faculty_URL}/assignTaskFeedback/${taskId}/${facultyId}/${studentId}`,
                 method: 'POST',
                 data
             }),
@@ -186,6 +218,15 @@ export const facultyApi = baseApi.injectEndpoints({
         updateSingleTaskHint: build.mutation({
             query: ({ data, taskId, hintId }: { data: any; taskId: string, hintId: string }) => ({
                 url: `${Faculty_URL}/updateHint/${taskId}/${hintId}`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
+        updateTaskFeedback: build.mutation({
+            query: ({ data, taskId, facultyId, studentId }: { data: any; taskId: string, facultyId: string; studentId: string }) => ({
+                url: `${Faculty_URL}/updateTaskFeedback/update/${taskId}/${facultyId}/${studentId}`,
                 method: 'PATCH',
                 data
             }),
@@ -233,5 +274,9 @@ export const
         useGetUnassignTaskStudentListQuery,
         useAssignTaskStudentMutation,
         useGetAssignTaskStudentListQuery,
-        useUnassignTaskStudentMutation
+        useUnassignTaskStudentMutation,
+        useGetAllCompleteStudentTasksQuery,
+        useGetAllCompleteTaskStudentsQuery,
+        useUpdateTaskFeedbackMutation,
+        useAssignTaskFeedbackMutation
     } = facultyApi

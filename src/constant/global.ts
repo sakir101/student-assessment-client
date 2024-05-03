@@ -38,3 +38,22 @@ export const timeOptions = [
         value: "1month"
     }
 ]
+
+export const status = [
+    {
+        label: "Correct",
+        value: "Correct"
+    },
+    {
+        label: "Partially Correct",
+        value: "PartiallyCorrect"
+    },
+    {
+        label: "Wrong",
+        value: "Wrong"
+    },
+    {
+        label: "Partially Wrong",
+        value: "PartiallyWrong"
+    }
+]
