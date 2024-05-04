@@ -164,10 +164,20 @@ const ViewFeedback = () => {
                   </p>
                   <p className="text-center my-3">
                     Your task status:{" "}
-                    <span className="font-bold">{data?.status}</span>
+                    <span className="font-bold">
+                      {data?.status === "Correct"
+                        ? "Correct"
+                        : data?.status === "Wrong"
+                        ? "Wrong"
+                        : data?.status === "PartiallyCorrect"
+                        ? "Partially Correct"
+                        : data?.status === "PartiallyWrong"
+                        ? "Partially Wrong"
+                        : ""}
+                    </span>
                   </p>
                   {data?.comment ? (
-                    <div className="bg-stone-300 my-3 p-5">
+                    <div className="bg-stone-200 my-3 p-5">
                       <ReactQuill
                         value={data?.comment}
                         readOnly={true}
