@@ -1,36 +1,62 @@
 "use client";
 
-import Form from "@/components/Forms/Form";
-import FormSelectField, {
-  SelectOptions,
-} from "@/components/Forms/FormSelectField";
-
 import { useGetInterestQuery } from "@/redux/api/interestApi";
-import { Button, message } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { Button, Select } from "antd";
 import { useState } from "react";
-import { useAssignInterestMutation } from "@/redux/api/interestStudentApi";
-import { getUserInfo } from "@/services/auth.service";
-import FormMultiSelectField from "@/components/Forms/FormMultiSelectField";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
 
-const InterestCreate = () => {
-  const [interestSelect, setInterestSelect] = useState(false);
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "link",
+  "color",
+  "background",
+  "align",
+];
+
+const RelatedWorksCreate = () => {
+  const [skillSelect, setSkillSelect] = useState(false);
   const [english, setEnglish] = useState(true);
   const [bangla, setBangla] = useState(false);
-  const { data, isLoading } = useGetInterestQuery({
+  const [interests, setInterests] = useState<string>("");
+
+  const { data: interestData, isLoading } = useGetInterestQuery({
     refetchOnMountOrArgChange: true,
   });
-  const [assignInterest, { isSuccess, isError }] = useAssignInterestMutation();
 
-  const interests = data?.interest;
-  const interestOptions = interests?.map((interest) => {
+  const newInterestData = interestData?.interest;
+  const interestOptions = newInterestData?.map((interest) => {
     return {
       label: interest?.title,
-      value: interest?.id,
+      value: interest?.title,
     };
   });
+
   const onSelect = () => {
-    setInterestSelect(!interestSelect);
+    setSkillSelect(!skillSelect);
   };
 
   const selectLanguageEnglish = () => {
@@ -42,43 +68,24 @@ const InterestCreate = () => {
     setBangla(true);
     setEnglish(false);
   };
-  const onSubmit = async (data: any) => {
-    const key = "loadingKey";
-    message.loading({ content: "Loading...", key });
-    const { userId } = getUserInfo() as any;
 
-    assignInterest({ data, id: userId })
-      .unwrap()
-      .then(() => {
-        message.success("Successfully Interest Added");
-      })
-      .catch((err) => {
-        message.error("Failed to Add Interest");
-      })
-      .finally(() => {
-        message.destroy(key);
-      });
+  const handleChange = (value: string) => {
+    setInterests(value);
   };
+
   return (
     <div>
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Add your Interest
+        Add your skill related work
       </h1>
       <div className="flex-col justify-center mx-auto items-center my-10 w-full h-full text-center">
-        <Form submitHandler={onSubmit}>
-          <div style={{ margin: "10px 0px" }}>
-            <FormMultiSelectField
-              options={interestOptions as SelectOptions[]}
-              name="interest"
-              placeholder="Select Interest"
-            />
-          </div>
-          <div className="flex-col justify-center mx-auto items-center my-4 text-center">
-            <Button type="primary" htmlType="submit" className="w-1/4">
-              Submit
-            </Button>
-          </div>
-        </Form>
+        <Select
+          defaultValue="Set Working Field"
+          className="w-full lg:w-1/2 mr-3"
+          onChange={handleChange}
+          options={interestOptions}
+          allowClear
+        />
       </div>
       <div>
         <button
@@ -89,7 +96,7 @@ const InterestCreate = () => {
         </button>
 
         <div>
-          {interestSelect ? (
+          {skillSelect ? (
             <div className="my-5">
               <div className="flex justify-center items-center text-center mx-auto">
                 <Button
@@ -128,4 +135,4 @@ const InterestCreate = () => {
   );
 };
 
-export default InterestCreate;
+export default RelatedWorksCreate;

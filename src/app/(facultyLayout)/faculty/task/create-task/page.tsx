@@ -8,37 +8,10 @@ import dynamic from "next/dynamic";
 import { useTaskCreateMutation } from "@/redux/api/taskApi";
 import { message } from "antd";
 import { getUserInfo } from "@/services/auth.service";
+import { formats, modules } from "@/components/ui/QuillModuleFormat";
+import "../../../../../components/QuillCss/page.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-const modules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ color: [] }, { background: [] }],
-    [{ align: [] }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "code-block"],
-    ["clean"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
-};
-const formats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "code-block",
-  "list",
-  "link",
-  "color",
-  "background",
-  "align",
-];
 
 const CreateTask = () => {
   const {
@@ -124,7 +97,6 @@ const CreateTask = () => {
                 Description <span className="required"> * </span>{" "}
               </label>
               <ReactQuill
-                className="bg-white rounded-md"
                 value={description}
                 onChange={setDescription}
                 modules={modules}
@@ -139,7 +111,6 @@ const CreateTask = () => {
             >
               <label className="font-weight-bold">Solution</label>
               <ReactQuill
-                className="bg-white rounded-md"
                 value={solution}
                 onChange={setSolution}
                 modules={modules}

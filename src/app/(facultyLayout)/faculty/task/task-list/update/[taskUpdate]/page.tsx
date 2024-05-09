@@ -23,37 +23,10 @@ import {
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
+import "../../../../../../../components/QuillCss/page.css";
+import { formats, modules } from "@/components/ui/QuillModuleFormat";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-const modules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ color: [] }, { background: [] }],
-    [{ align: [] }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "code-block"],
-    ["clean"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
-};
-const formats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "code-block",
-  "list",
-  "link",
-  "color", // Add color option
-  "background", // Add background color option
-  "align", // Add text alignment option
-];
 
 const { confirm } = Modal;
 const TaskUpdate = () => {
@@ -280,12 +253,11 @@ const TaskUpdate = () => {
             >
               <label className="font-weight-bold">Description</label>
               <ReactQuill
-                className="bg-white rounded-md"
                 value={description}
                 onChange={setDescription}
                 modules={modules}
                 formats={formats}
-                placeholder={"Write something awesome..."}
+                placeholder={"Write description..."}
               />
               {formError && <p className="text-red-500">{formError}</p>}
             </div>
@@ -295,12 +267,11 @@ const TaskUpdate = () => {
             >
               <label className="font-weight-bold">Solution</label>
               <ReactQuill
-                className="bg-white rounded-md"
                 value={solution}
                 onChange={setSolution}
                 modules={modules}
                 formats={formats}
-                placeholder={"Write something awesome..."}
+                placeholder={"Write solution..."}
               />
             </div>
             <div className="flex justify-center">

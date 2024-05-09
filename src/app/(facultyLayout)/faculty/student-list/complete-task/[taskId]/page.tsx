@@ -12,35 +12,6 @@ import "react-quill/dist/quill.bubble.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const modules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ color: [] }, { background: [] }],
-    [{ align: [] }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "code-block"],
-    ["clean"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
-};
-const formats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "code-block",
-  "list",
-  "link",
-  "color",
-  "background",
-  "align",
-];
-
 const CompleteTaskStudent = () => {
   const [taskId, setTaskId] = useState<string>("");
 
@@ -60,38 +31,6 @@ const CompleteTaskStudent = () => {
     taskId,
     { refetchOnMountOrArgChange: true }
   );
-
-  const renderHtmlWithCodeBlocks = (htmlContent: string) => {
-    if (!htmlContent) {
-      return null;
-    }
-
-    const parts = htmlContent.split(/(<pre[^>]*>[\s\S]*?<\/pre>)/g);
-
-    return (
-      <div>
-        {parts.map((part, index) => {
-          const sanitizedHtmlContent = DOMPurify.sanitize(part);
-          if (sanitizedHtmlContent.startsWith("<pre")) {
-            return (
-              <div key={index}>
-                <div
-                  className="bg-gray-900 text-white rounded-md overflow-x-auto p-5"
-                  dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
-                />
-              </div>
-            );
-          }
-          return (
-            <span
-              key={index}
-              dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
-            />
-          );
-        })}
-      </div>
-    );
-  };
 
   return (
     <div className="mt-3 lg:mt-3 p-5">
@@ -119,7 +58,6 @@ const CompleteTaskStudent = () => {
                       readOnly={true}
                       theme={"bubble"}
                     />
-                    {/* {renderHtmlWithCodeBlocks(data[0]?.task.description)} */}
                   </p>
                 </div>
               </div>
@@ -156,7 +94,6 @@ const CompleteTaskStudent = () => {
                           readOnly={true}
                           theme={"bubble"}
                         />
-                        {/* {renderHtmlWithCodeBlocks(item?.solution)} */}
                       </p>
                     </div>
                     <div className="bg-gray-300 my-3">

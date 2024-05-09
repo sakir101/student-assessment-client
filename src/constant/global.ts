@@ -57,3 +57,22 @@ export const status = [
         value: "PartiallyWrong"
     }
 ]
+
+export const skillStatus = [
+    {
+        label: "Expert",
+        value: "Expert"
+    },
+    {
+        label: "Proficient",
+        value: "Proficient"
+    },
+    {
+        label: "Competent",
+        value: "Competent"
+    },
+    {
+        label: "Novice",
+        value: "Novice"
+    },
+]

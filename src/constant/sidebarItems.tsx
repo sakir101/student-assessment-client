@@ -296,19 +296,22 @@ export const sidebarItems = (role: string) => {
       children: [
         {
           label: (
-            <Link className="hover:text-slate-400" href={`/${role}/set-skill`}>
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/skill/create`}
+            >
               Set Skill
             </Link>
           ),
-          key: `/${role}/set-skill`,
+          key: `/${role}/skill/create`,
         },
         {
           label: (
-            <Link className="hover:text-slate-400" href={`/${role}/skill-list`}>
+            <Link className="hover:text-slate-400" href={`/${role}/skill/view`}>
               Skill List
             </Link>
           ),
-          key: `/${role}/skill-list`,
+          key: `/${role}/skill/view`,
         },
       ],
     },
@@ -350,23 +353,23 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/set-related-works-student`}
+              href={`/${role}/related-works-student/create`}
             >
               Set Related Works
             </Link>
           ),
-          key: `/${role}/set-related-works-student`,
+          key: `/${role}/related-works-student/create`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/related-works-list-student`}
+              href={`/${role}/related-works-student/view`}
             >
               Related Works List
             </Link>
           ),
-          key: `/${role}/related-works-list-student`,
+          key: `/${role}/related-works-student/view`,
         },
       ],
     },

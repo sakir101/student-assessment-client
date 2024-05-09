@@ -39,6 +39,21 @@ export const studentApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.student],
         }),
 
+        getAssignSkill: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Student_URL}/getSkill/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IInterest[], meta: IMeta) => {
+                return {
+                    interest: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.student],
+        }),
+
         enrollFaculty: build.mutation({
             query: ({ data, id }: { data: any; id: string }) => ({
                 url: `${Student_URL}/${id}/enroll-faculties`,
@@ -155,5 +170,6 @@ export const {
     useUpdateSingleStudentTaskMutation,
     useGetAllSpecificCompleteStudentTaskQuery,
     useGetSpecificFeedbackTaskQuery,
-    useGetAllFeedbackTaskQuery
+    useGetAllFeedbackTaskQuery,
+    useGetAssignSkillQuery
 } = studentApi

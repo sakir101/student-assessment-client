@@ -1,36 +1,33 @@
 "use client";
 
 import Form from "@/components/Forms/Form";
-import FormSelectField, {
-  SelectOptions,
-} from "@/components/Forms/FormSelectField";
-
-import { useGetInterestQuery } from "@/redux/api/interestApi";
-import { Button, message } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { useAssignInterestMutation } from "@/redux/api/interestStudentApi";
-import { getUserInfo } from "@/services/auth.service";
 import FormMultiSelectField from "@/components/Forms/FormMultiSelectField";
+import { useGetInterestQuery } from "@/redux/api/interestApi";
+import { useAssignSkillMutation } from "@/redux/api/skillStudentApi";
+import { getUserInfo } from "@/services/auth.service";
+import { Button, message } from "antd";
+import { useState } from "react";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { SelectOptions } from "@/components/Forms/FormSelectField";
 
-const InterestCreate = () => {
-  const [interestSelect, setInterestSelect] = useState(false);
+const SkillCreate = () => {
+  const [skillSelect, setSkillSelect] = useState(false);
   const [english, setEnglish] = useState(true);
   const [bangla, setBangla] = useState(false);
   const { data, isLoading } = useGetInterestQuery({
     refetchOnMountOrArgChange: true,
   });
-  const [assignInterest, { isSuccess, isError }] = useAssignInterestMutation();
+  const [assignSkill, { isSuccess, isError }] = useAssignSkillMutation();
 
-  const interests = data?.interest;
-  const interestOptions = interests?.map((interest) => {
+  const skills = data?.interest;
+  const skillOptions = skills?.map((skill) => {
     return {
-      label: interest?.title,
-      value: interest?.id,
+      label: skill?.title,
+      value: skill?.id,
     };
   });
   const onSelect = () => {
-    setInterestSelect(!interestSelect);
+    setSkillSelect(!skillSelect);
   };
 
   const selectLanguageEnglish = () => {
@@ -47,7 +44,7 @@ const InterestCreate = () => {
     message.loading({ content: "Loading...", key });
     const { userId } = getUserInfo() as any;
 
-    assignInterest({ data, id: userId })
+    assignSkill({ data, id: userId })
       .unwrap()
       .then(() => {
         message.success("Successfully Interest Added");
@@ -62,15 +59,15 @@ const InterestCreate = () => {
   return (
     <div>
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Add your Interest
+        Add your Skill
       </h1>
       <div className="flex-col justify-center mx-auto items-center my-10 w-full h-full text-center">
         <Form submitHandler={onSubmit}>
           <div style={{ margin: "10px 0px" }}>
             <FormMultiSelectField
-              options={interestOptions as SelectOptions[]}
+              options={skillOptions as SelectOptions[]}
               name="interest"
-              placeholder="Select Interest"
+              placeholder="Select Skill"
             />
           </div>
           <div className="flex-col justify-center mx-auto items-center my-4 text-center">
@@ -89,7 +86,7 @@ const InterestCreate = () => {
         </button>
 
         <div>
-          {interestSelect ? (
+          {skillSelect ? (
             <div className="my-5">
               <div className="flex justify-center items-center text-center mx-auto">
                 <Button
@@ -128,4 +125,4 @@ const InterestCreate = () => {
   );
 };
 
-export default InterestCreate;
+export default SkillCreate;

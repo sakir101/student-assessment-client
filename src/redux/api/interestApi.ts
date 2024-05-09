@@ -22,7 +22,15 @@ export const interestApi = baseApi.injectEndpoints({
             },
             providesTags: [tagTypes.interest]
         }),
+
+        getSingleInterest: build.query({
+            query: (id: string | string[] | undefined) => ({
+                url: `${Interest_URL}/${id}`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.interest],
+        }),
     }),
 })
 
-export const { useGetInterestQuery } = interestApi
+export const { useGetInterestQuery, useGetSingleInterestQuery } = interestApi

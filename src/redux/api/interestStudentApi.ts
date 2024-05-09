@@ -13,6 +13,16 @@ export const interestStudentApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: [tagTypes.interestStudent],
         }),
+
+        updateSkillStatus: build.mutation({
+            query: ({ data, id, interestId }: { data: any; id: string, interestId: string }) => ({
+                url: `/students/${id}/${interestId}/skill-status`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.student],
+        }),
+
         deleteInterest: build.mutation({
             query: ({ data, id }: { data: any; id: string }) => ({
                 url: `/students/${id}/delete-interests`,
@@ -24,5 +34,5 @@ export const interestStudentApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useAssignInterestMutation, useDeleteInterestMutation } = interestStudentApi;
+export const { useAssignInterestMutation, useUpdateSkillStatusMutation, useDeleteInterestMutation } = interestStudentApi;
 
