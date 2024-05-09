@@ -187,7 +187,7 @@ const Feedback = ({
       {taskFeedback ? (
         <>
           <div className="w-full flex justify-center">
-            <div className="w-1/4">
+            <div className="w-full lg:w-1/4">
               <select
                 className="select select-secondary w-full h-9 min-h-9"
                 defaultValue={
@@ -214,7 +214,7 @@ const Feedback = ({
             </div>
           </div>
           <div className="w-full flex justify-center my-3">
-            <div className="w-1/2">
+            <div className="w-full p-2 lg:p-5">
               <ReactQuill
                 value={comment}
                 onChange={setComment}
@@ -233,7 +233,7 @@ const Feedback = ({
       ) : (
         <>
           <div className="w-full flex justify-center">
-            <div className="w-1/4">
+            <div className="w-full lg:w-1/4">
               <Select
                 placeholder="Select Status"
                 options={status}
@@ -244,7 +244,7 @@ const Feedback = ({
             </div>
           </div>
           <div className="w-full flex justify-center my-3">
-            <div className="w-1/2">
+            <div className="w-full lg:w-1/2">
               <ReactQuill
                 value={comment}
                 onChange={setComment}

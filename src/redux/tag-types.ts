@@ -4,6 +4,7 @@ export enum tagTypes {
     faculty = "faculty",
     interest = "interest",
     skillStudent = "skillStudent",
+    relatedWorksStudent = "relatedWorksStudent",
     interestStudent = "interestStudent",
     careerGuide = "careerGuide",
     task = "tasks"
@@ -15,6 +16,7 @@ export const tagTypesList = [
     tagTypes.faculty,
     tagTypes.interest,
     tagTypes.skillStudent,
+    tagTypes.relatedWorksStudent,
     tagTypes.interestStudent,
     tagTypes.careerGuide,
     tagTypes.task

@@ -50,10 +50,11 @@ const CompleteTaskStudent = () => {
                   {data[0]?.task.title}
                 </h1>
 
-                <div className="p-5 bg-slate-300 rounded-md mb-4">
+                <div className="p-2 lg:p-5 bg-slate-300 rounded-md mb-4">
                   <p>
                     <span className="font-bold">Task Description: </span>
                     <ReactQuill
+                      className="mt-3"
                       value={data[0]?.task.description}
                       readOnly={true}
                       theme={"bubble"}
@@ -61,53 +62,58 @@ const CompleteTaskStudent = () => {
                   </p>
                 </div>
               </div>
-              <div className="my-4">
-                {data?.map((item: any) => (
-                  <div
-                    key={item?.id}
-                    className="p-5 bg-slate-300 shadow-md my-4 rounded-md"
-                  >
-                    <div className="flex items-center">
-                      <div className="avatar mr-3">
-                        <div className="w-10 rounded-full">
-                          <Image
-                            src={item?.student?.profileImage}
-                            width={50}
-                            height={50}
-                            alt="Profile Image"
-                          />
+              <div className="my-4 flex justify-center items-center w-full">
+                <div className="w-full lg:w-3/4">
+                  {data?.map((item: any) => (
+                    <div
+                      key={item?.id}
+                      className="p-2 lg:p-5 bg-slate-300 shadow-md my-4 rounded-md"
+                    >
+                      <div className="flex items-center">
+                        <div className="avatar mr-3">
+                          <div className="w-10 rounded-full">
+                            <Image
+                              src={item?.student?.profileImage}
+                              width={50}
+                              height={50}
+                              alt="Profile Image"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-lg">
+                            {item?.student?.firstName}{" "}
+                            {item?.student?.middleName}{" "}
+                            {item?.student?.lastName}
+                          </p>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-lg">
-                          {item?.student?.firstName} {item?.student?.middleName}{" "}
-                          {item?.student?.lastName}
+                      <p className="text-lg">{item?.student?.studentId}</p>
+                      <div className="p-2 lg:p-5 my-4">
+                        <p>
+                          <span className="font-bold">Task Solution: </span>
+                          <br />
+                          <ReactQuill
+                            className="mt-3"
+                            value={item?.solution}
+                            readOnly={true}
+                            theme={"bubble"}
+                          />
                         </p>
                       </div>
-                    </div>
-                    <p className="text-lg">{item?.student?.studentId}</p>
-                    <div className="p-5 bg-slate-400 rounded-md my-4">
-                      <p>
-                        <span className="font-bold">Task Solution: </span>
-                        <ReactQuill
-                          value={item?.solution}
-                          readOnly={true}
-                          theme={"bubble"}
+                      <div className="bg-gray-300 my-3">
+                        <h1 className="text-center text-lg text-blue-500 font-semibold mb-3">
+                          Throw your feedback
+                        </h1>
+                        <Feedback
+                          studentUserId={item?.student?.userId}
+                          studentId={item?.student?.id}
+                          taskId={taskId}
                         />
-                      </p>
+                      </div>
                     </div>
-                    <div className="bg-gray-300 my-3">
-                      <h1 className="text-center text-lg text-blue-500 font-semibold mb-3">
-                        Throw your feedback
-                      </h1>
-                      <Feedback
-                        studentUserId={item?.student?.userId}
-                        studentId={item?.student?.id}
-                        taskId={taskId}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
