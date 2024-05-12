@@ -9,6 +9,7 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
+import "../../../../../../components/QuillCss/page.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 

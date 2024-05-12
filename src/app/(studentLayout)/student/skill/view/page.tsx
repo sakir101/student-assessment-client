@@ -69,7 +69,7 @@ const SkillView = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const interestData = data?.interest;
+  const interestData = data?.skill;
   const meta = data?.meta;
 
   const { data: singleInterestData } = useGetSingleInterestQuery(interestID, {

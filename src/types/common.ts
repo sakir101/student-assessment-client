@@ -27,6 +27,31 @@ export type IInterest = {
     updatedAt: string;
 }
 
+export type ISkill = {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    SkillStudent: {
+        interestId: string;
+        status: string;
+        studentId: string;
+    }[];
+};
+
+export type IRelatedWork = {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    RelatedWorksStudent: {
+        interestId: string;
+        description: string;
+        studentId: string;
+    }[];
+};
+
+
 export interface IFaculty {
     id: string;
     facultyId: string;
