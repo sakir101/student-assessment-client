@@ -1,6 +1,4 @@
-"use client";
-
-import { ReactElement, ReactNode, useEffect } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 
 type FormConfig = {
@@ -11,6 +9,7 @@ type FormConfig = {
 type FormProps = {
   children?: ReactElement | ReactNode;
   submitHandler: SubmitHandler<any>;
+  formKey: string;
 } & FormConfig;
 
 const Form = ({
@@ -18,6 +17,7 @@ const Form = ({
   submitHandler,
   defaultValues,
   resolver,
+  formKey,
 }: FormProps) => {
   const formConfig: FormConfig = {};
 
@@ -25,14 +25,32 @@ const Form = ({
   if (!!resolver) formConfig["resolver"] = resolver;
   const methods = useForm<FormProps>(formConfig);
 
-  const { handleSubmit, reset } = methods;
-
+  const { handleSubmit, reset, watch } = methods;
+  const [shouldResetForm, setShouldResetForm] = useState(false);
   const onSubmit = (data: any) => {
     submitHandler(data);
-    reset();
+    reset("");
+    localStorage.removeItem(`formValues_${formKey}`);
+    setShouldResetForm(true);
   };
 
-  useEffect(() => reset(defaultValues), [defaultValues, reset, methods]);
+  useEffect(() => {
+    const storedFormValues = localStorage.getItem(`formValues_${formKey}`);
+    if (storedFormValues) {
+      reset(JSON.parse(storedFormValues));
+      setShouldResetForm(true);
+    }
+  }, [reset, formKey]);
+
+  useEffect(() => {
+    const watchSubscription: any = watch((formValues: any) => {
+      localStorage.setItem(`formValues_${formKey}`, JSON.stringify(formValues));
+    });
+
+    return () => {
+      watchSubscription.unsubscribe();
+    };
+  }, [watch, formKey]);
 
   return (
     <FormProvider {...methods}>

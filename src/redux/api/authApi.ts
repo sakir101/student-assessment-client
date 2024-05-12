@@ -12,6 +12,16 @@ export const authApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: [tagTypes.user]
         }),
+
+        passwordUpdate: build.mutation({
+            query: ({ id, data }: { id: string, data: any }) => ({
+                url: `${Auth_URL}/${id}/update-password`,
+                method: "POST",
+                data
+            }),
+            invalidatesTags: [tagTypes.user]
+        }),
+
         forgetPassword: build.mutation({
             query: (userEmail) => ({
                 url: '/auth/renew-password',
@@ -23,4 +33,4 @@ export const authApi = baseApi.injectEndpoints({
     }),
 })
 
-export const { useUserLoginMutation, useForgetPasswordMutation } = authApi
+export const { useUserLoginMutation, useForgetPasswordMutation, usePasswordUpdateMutation } = authApi

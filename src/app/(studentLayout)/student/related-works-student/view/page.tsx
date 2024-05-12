@@ -69,7 +69,7 @@ const RelatedWorksView = () => {
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Your assigned task list
+        Your work list
       </h1>
       <div className="flex justify-center items-center mt-5 lg:mt-7">
         {isLoading ? (
