@@ -1,22 +1,20 @@
 "use client";
 
 import { Button, Select, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "../../../../../components/QuillCss/page.css";
-import { formats, modules } from "@/components/ui/QuillModuleFormat";
-import { useAssignRelatedWorksMutation } from "@/redux/api/relatedWorksStudentApi";
 import { getUserInfo } from "@/services/auth.service";
+import { useAssignRelatedWorksFacultyMutation } from "@/redux/api/relatedWorksFacultyApi";
+import { formats, modules } from "@/components/ui/QuillModuleFormat";
 import { useDebounced } from "@/redux/hooks";
-import { useGetAssignSkillQuery } from "@/redux/api/studentApi";
+import { useGetAssignExpertiseQuery } from "@/redux/api/facultyApi";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-const RelatedWorksCreate = () => {
+const RelatedWorkCreateFaculty = () => {
   const query: Record<string, any> = {};
-
   const [skillSelect, setSkillSelect] = useState(false);
   const [english, setEnglish] = useState(true);
   const [bangla, setBangla] = useState(false);
@@ -25,10 +23,7 @@ const RelatedWorksCreate = () => {
   const [isError, setError] = useState<string>("");
   const [isErrorOption, setErrorOption] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { userId } = getUserInfo() as any;
-
   query["searchTerm"] = searchTerm;
-
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,
@@ -38,7 +33,9 @@ const RelatedWorksCreate = () => {
     query["searchTerm"] = debouncedTerm;
   }
 
-  const { data, isLoading, refetch } = useGetAssignSkillQuery(
+  const { userId } = getUserInfo() as any;
+
+  const { data } = useGetAssignExpertiseQuery(
     {
       id: userId,
       arg: query,
@@ -46,16 +43,16 @@ const RelatedWorksCreate = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const interestData = data?.skill;
+  const interestData = data?.interest;
 
-  const interestOptions = interestData?.map((interest: any) => {
+  const interestOptions = interestData?.map((interest) => {
     return {
       label: interest?.title,
       value: interest?.id,
     };
   });
 
-  const [assignRelatedWorks] = useAssignRelatedWorksMutation();
+  const [assignRelatedWorksFaculty] = useAssignRelatedWorksFacultyMutation();
 
   const onSelect = () => {
     setSkillSelect(!skillSelect);
@@ -94,7 +91,7 @@ const RelatedWorksCreate = () => {
     };
 
     try {
-      assignRelatedWorks({ data, id: userId, interestId: interests })
+      assignRelatedWorksFaculty({ data, id: userId, interestId: interests })
         .unwrap()
         .then(() => {
           message.success("Work detail added successfully");
@@ -117,7 +114,7 @@ const RelatedWorksCreate = () => {
   return (
     <div>
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Add your skill related work
+        Add your expertise related work
       </h1>
       <div className="flex flex-col justify-center mx-auto items-center my-10 w-full">
         <div className="w-full flex justify-center">
@@ -206,4 +203,4 @@ const RelatedWorksCreate = () => {
   );
 };
 
-export default RelatedWorksCreate;
+export default RelatedWorkCreateFaculty;

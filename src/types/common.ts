@@ -51,6 +51,18 @@ export type IRelatedWork = {
     }[];
 };
 
+export type IRelatedWorkFaculty = {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    RelatedWorksFaculty: {
+        interestId: string;
+        description: string;
+        studentId: string;
+    }[];
+};
+
 
 export interface IFaculty {
     id: string;

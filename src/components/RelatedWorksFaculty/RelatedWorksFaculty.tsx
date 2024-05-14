@@ -6,13 +6,13 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import dynamic from "next/dynamic";
+import { getUserInfo } from "@/services/auth.service";
+import {
+  useDeleteRelatedWorksFacultyMutation,
+  useUpdateRelatedWorksDescFacultyMutation,
+} from "@/redux/api/relatedWorksFacultyApi";
 import "../../components/QuillCss/page.css";
 import { formats, modules } from "../ui/QuillModuleFormat";
-import {
-  useDeleteRelatedWorksMutation,
-  useUpdateRelatedWorksDescMutation,
-} from "@/redux/api/relatedWorksStudentApi";
-import { getUserInfo } from "@/services/auth.service";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -25,7 +25,8 @@ interface RelatedWorksProps {
   onDeleteSuccess: () => void;
   onUpdateSuccess: () => void;
 }
-const RelatedWorks: React.FC<RelatedWorksProps> = ({
+
+const RelatedWorksFaculty: React.FC<RelatedWorksProps> = ({
   interestId,
   description,
   title,
@@ -46,9 +47,10 @@ const RelatedWorks: React.FC<RelatedWorksProps> = ({
     setCheck(checked);
   };
 
-  const [deleteRelatedWorks] = useDeleteRelatedWorksMutation();
+  const [deleteRelatedWorksFaculty] = useDeleteRelatedWorksFacultyMutation();
 
-  const [updateRelatedWorksDesc] = useUpdateRelatedWorksDescMutation();
+  const [updateRelatedWorksDescFaculty] =
+    useUpdateRelatedWorksDescFacultyMutation();
 
   const onUpdate = async () => {
     if (workDescription.length < 100) {
@@ -63,7 +65,7 @@ const RelatedWorks: React.FC<RelatedWorksProps> = ({
     };
 
     try {
-      updateRelatedWorksDesc({ data, id: userId, interestId })
+      updateRelatedWorksDescFaculty({ data, id: userId, interestId })
         .unwrap()
         .then(() => {
           message.success("Work updated successfully");
@@ -109,7 +111,7 @@ const RelatedWorks: React.FC<RelatedWorksProps> = ({
     message.loading({ content: "Loading...", key });
     try {
       const { userId: id } = getUserInfo() as any;
-      await deleteRelatedWorks({ id: userId, interestId: intId });
+      await deleteRelatedWorksFaculty({ id: userId, interestId: intId });
       setIsModalOpen(false);
 
       message.destroy(key);
@@ -174,4 +176,4 @@ const RelatedWorks: React.FC<RelatedWorksProps> = ({
   );
 };
 
-export default RelatedWorks;
+export default RelatedWorksFaculty;

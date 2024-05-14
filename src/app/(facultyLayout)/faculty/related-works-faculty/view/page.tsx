@@ -1,15 +1,15 @@
 "use client";
 
-import Loading from "@/app/loading";
-import { useGetAssignRelatedWorksQuery } from "@/redux/api/studentApi";
-import { useDebounced } from "@/redux/hooks";
-import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, Pagination } from "antd";
 import { useEffect, useState } from "react";
 import { ReloadOutlined } from "@ant-design/icons";
-import RelatedWorks from "@/components/RelatedWorks/RelatedWorks";
+import { useDebounced } from "@/redux/hooks";
+import { getUserInfo } from "@/services/auth.service";
+import { useGetAssignRelatedWorksFacultyQuery } from "@/redux/api/facultyApi";
+import Loading from "@/app/loading";
+import RelatedWorksFaculty from "@/components/RelatedWorksFaculty/RelatedWorksFaculty";
 
-const RelatedWorksView = () => {
+const RelatedWorkViewFaculty = () => {
   const query: Record<string, any> = {};
 
   const [page, setPage] = useState<number>();
@@ -41,7 +41,7 @@ const RelatedWorksView = () => {
 
   const { userId } = getUserInfo() as any;
 
-  const { data, isLoading, refetch } = useGetAssignRelatedWorksQuery(
+  const { data, isLoading, refetch } = useGetAssignRelatedWorksFacultyQuery(
     {
       id: userId,
       arg: query,
@@ -72,7 +72,6 @@ const RelatedWorksView = () => {
   const resetFilters = () => {
     setSearchTerm("");
   };
-
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
@@ -120,10 +119,10 @@ const RelatedWorksView = () => {
             </div>
 
             <div>
-              <RelatedWorks
+              <RelatedWorksFaculty
                 key={item.id}
-                interestId={item?.RelatedWorksStudent[0]?.interestId}
-                description={item?.RelatedWorksStudent[0]?.description}
+                interestId={item?.RelatedWorksFaculty[0]?.interestId}
+                description={item?.RelatedWorksFaculty[0]?.description}
                 title={item?.title}
                 onDeleteSuccess={handleDeleteSuccess}
                 onUpdateSuccess={handleUpdateSuccess}
@@ -144,4 +143,4 @@ const RelatedWorksView = () => {
   );
 };
 
-export default RelatedWorksView;
+export default RelatedWorkViewFaculty;

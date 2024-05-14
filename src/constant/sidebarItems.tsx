@@ -196,23 +196,23 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/set-related-works`}
+              href={`/${role}/related-works-faculty/create`}
             >
               Set Related Works
             </Link>
           ),
-          key: `/${role}/set-related-works`,
+          key: `/${role}/related-works-faculty/create`,
         },
         {
           label: (
             <Link
               className="hover:text-slate-400"
-              href={`/${role}/related-works-list`}
+              href={`/${role}/related-works-faculty/view`}
             >
               Related Works List
             </Link>
           ),
-          key: `/${role}/related-works-list`,
+          key: `/${role}/related-works-faculty/view`,
         },
       ],
     },

@@ -1,4 +1,4 @@
-import { IFaculty, IInterest, IMeta, IStudent, ITask } from "@/types";
+import { IFaculty, IInterest, IMeta, IRelatedWorkFaculty, IStudent, ITask } from "@/types";
 import { tagTypes } from "../tag-types"
 import { baseApi } from "./baseApi"
 
@@ -50,6 +50,21 @@ export const facultyApi = baseApi.injectEndpoints({
             transformResponse: (response: IInterest[], meta: IMeta) => {
                 return {
                     interest: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.faculty],
+        }),
+
+        getAssignRelatedWorksFaculty: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Faculty_URL}/getRelatedWorksFaculty/${id}`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IRelatedWorkFaculty[], meta: IMeta) => {
+                return {
+                    relatedWorks: response,
                     meta,
                 };
             },
@@ -278,5 +293,6 @@ export const
         useGetAllCompleteStudentTasksQuery,
         useGetAllCompleteTaskStudentsQuery,
         useUpdateTaskFeedbackMutation,
-        useAssignTaskFeedbackMutation
+        useAssignTaskFeedbackMutation,
+        useGetAssignRelatedWorksFacultyQuery
     } = facultyApi
