@@ -83,6 +83,7 @@ const SignUpStudent = () => {
           <Form
             submitHandler={onSubmit}
             resolver={yupResolver(signupStudentSchema)}
+            formKey="signupStudent"
           >
             <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md">
               <FormInput

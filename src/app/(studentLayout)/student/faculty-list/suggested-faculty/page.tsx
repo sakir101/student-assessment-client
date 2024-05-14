@@ -1,7 +1,6 @@
 "use client";
 
-import { Button, Input, message, Modal, Select } from "antd";
-
+import { Button, Input, message, Modal, Select, notification } from "antd";
 import { useEffect, useState } from "react";
 import {
   DeleteOutlined,
@@ -33,6 +32,8 @@ const SuggestedFacultyList = () => {
   const [InterestFaculty, setInterestFaculty] = useState<string>("");
   const [institution, setInstitution] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notificationOpened, setNotificationOpened] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
 
   query["size"] = size;
   query["page"] = page;
@@ -52,6 +53,7 @@ const SuggestedFacultyList = () => {
   if (institution?.length > 0) {
     query["institution"] = institution;
   }
+
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,
@@ -74,6 +76,22 @@ const SuggestedFacultyList = () => {
     },
     { refetchOnMountOrArgChange: true }
   );
+
+  useEffect(() => {
+    const openNotification = () => {
+      api.open({
+        message: "No Faculty Found!",
+        description:
+          "If you can not find any faculty it might you did not select any skill and interest or there is no faculty matched with your skill and interest.",
+        duration: 0,
+      });
+    };
+
+    if (data?.faculty && data.faculty.length === 0 && !notificationOpened) {
+      openNotification();
+      setNotificationOpened(true);
+    }
+  }, [data, api, notificationOpened]);
 
   const [enrollFaculty, { isSuccess, isError }] = useEnrollFacultyMutation();
 
@@ -297,6 +315,7 @@ const SuggestedFacultyList = () => {
           </div>
         )}
       </div>
+      {contextHolder}
     </div>
   );
 };

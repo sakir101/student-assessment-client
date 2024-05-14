@@ -60,7 +60,7 @@ const LoginPage = () => {
           Login your account
         </h1>
         <div>
-          <Form submitHandler={onSubmit}>
+          <Form submitHandler={onSubmit} formKey="loginUser">
             <div>
               <FormInput
                 name="email"

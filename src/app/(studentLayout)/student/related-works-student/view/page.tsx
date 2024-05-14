@@ -7,7 +7,7 @@ import { getUserInfo } from "@/services/auth.service";
 import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
 import { ReloadOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { Switch } from "antd";
+import { Pagination } from "antd";
 import RelatedWorks from "@/components/RelatedWorks/RelatedWorks";
 
 const RelatedWorksView = () => {
@@ -61,6 +61,10 @@ const RelatedWorksView = () => {
     setSize(meta?.limit);
     setPage(meta?.page);
   }, [meta]);
+
+  const handlePageChange = (currentPage: number) => {
+    setPage(currentPage);
+  };
 
   const resetFilters = () => {
     setSearchTerm("");
@@ -124,6 +128,14 @@ const RelatedWorksView = () => {
           </div>
         ))}
       </div>
+      <Pagination
+        current={page}
+        defaultCurrent={1}
+        total={meta?.total}
+        pageSize={size}
+        onChange={handlePageChange}
+        style={{ display: "flex", justifyContent: "center", marginTop: 40 }}
+      />
     </div>
   );
 };
