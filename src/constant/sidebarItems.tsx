@@ -35,6 +35,17 @@ export const sidebarItems = (role: string) => {
           label: (
             <Link
               className="hover:text-slate-400"
+              href={`/${role}/profile/update-profile`}
+            >
+              Update Profile
+            </Link>
+          ),
+          key: `/${role}/profile/update-profile`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
               href={`/${role}/profile/password-change`}
             >
               Change Password

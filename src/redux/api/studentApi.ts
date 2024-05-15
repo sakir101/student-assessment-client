@@ -147,6 +147,16 @@ export const studentApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.student],
         }),
 
+        updateStudentProfile: build.mutation({
+            query: ({ formData, id }) => ({
+                url: `/user/update-student/${id}`,
+                method: "PATCH",
+                formData,
+                contentType: "multipart/form-data"
+            }),
+            invalidatesTags: [tagTypes.student],
+        }),
+
         updateSingleStudentTask: build.mutation({
             query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
                 url: `${Student_URL}/${id}/${taskId}`,
@@ -187,5 +197,6 @@ export const {
     useGetSpecificFeedbackTaskQuery,
     useGetAllFeedbackTaskQuery,
     useGetAssignSkillQuery,
-    useGetAssignRelatedWorksQuery
+    useGetAssignRelatedWorksQuery,
+    useUpdateStudentProfileMutation
 } = studentApi

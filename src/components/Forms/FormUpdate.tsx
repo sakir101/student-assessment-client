@@ -14,7 +14,7 @@ type FormProps = {
   formKey: string;
 } & FormConfig;
 
-const Form = ({
+const FormUpdate = ({
   children,
   submitHandler,
   defaultValues,
@@ -31,9 +31,7 @@ const Form = ({
   const [shouldResetForm, setShouldResetForm] = useState(false);
   const onSubmit = async (data: any) => {
     await submitHandler(data);
-
     reset();
-    localStorage.removeItem(`formValues_${formKey}`);
     setShouldResetForm(true);
   };
 
@@ -44,8 +42,12 @@ const Form = ({
       reset(JSON.parse(storedFormValues));
       setShouldResetForm(true);
       return;
+    } else {
+      if (defaultValues) {
+        reset(defaultValues);
+      }
     }
-  }, [reset, formKey]);
+  }, [reset, formKey, defaultValues]);
 
   useEffect(() => {
     const watchSubscription: any = watch((formValues: any) => {
@@ -64,4 +66,4 @@ const Form = ({
   );
 };
 
-export default Form;
+export default FormUpdate;

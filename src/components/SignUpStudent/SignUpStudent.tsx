@@ -28,11 +28,11 @@ const SignUpStudent = () => {
     delete obj["file"];
 
     const data = JSON.stringify(obj);
-    console.log(data);
     const formData = new FormData();
 
     formData.append("file", file as Blob);
     formData.append("data", data);
+    console.log(formData);
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
 

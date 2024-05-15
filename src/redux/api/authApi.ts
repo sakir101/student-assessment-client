@@ -23,7 +23,7 @@ export const authApi = baseApi.injectEndpoints({
         }),
 
         forgetPassword: build.mutation({
-            query: (userEmail) => ({
+            query: (userEmail: string) => ({
                 url: '/auth/renew-password',
                 method: "POST",
                 data: userEmail
