@@ -248,6 +248,16 @@ export const facultyApi = baseApi.injectEndpoints({
             invalidatesTags: [tagTypes.faculty],
         }),
 
+        updateFacultyProfile: build.mutation({
+            query: ({ data, id }) => ({
+                url: `/user/update-faculty/${id}`,
+                method: "PATCH",
+                data,
+                contentType: "multipart/form-data"
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
         taskHintCreate: build.mutation({
             query: ({ data, id, taskId }: { data: any; id: string, taskId: string }) => ({
                 url: `${Faculty_URL}/${id}/${taskId}`,
@@ -260,6 +270,14 @@ export const facultyApi = baseApi.injectEndpoints({
         deleteTaskHint: build.mutation({
             query: ({ taskId, hintId }: { taskId: string, hintId: string }) => ({
                 url: `${Faculty_URL}/${taskId}/${hintId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [tagTypes.faculty],
+        }),
+
+        deleteSpecificTask: build.mutation({
+            query: ({ id, taskId }: { id: string, taskId: string }) => ({
+                url: `${Faculty_URL}/${id}/${taskId}/delete-specific-task`,
                 method: "DELETE",
             }),
             invalidatesTags: [tagTypes.faculty],
@@ -294,5 +312,7 @@ export const
         useGetAllCompleteTaskStudentsQuery,
         useUpdateTaskFeedbackMutation,
         useAssignTaskFeedbackMutation,
-        useGetAssignRelatedWorksFacultyQuery
+        useGetAssignRelatedWorksFacultyQuery,
+        useUpdateFacultyProfileMutation,
+        useDeleteSpecificTaskMutation
     } = facultyApi

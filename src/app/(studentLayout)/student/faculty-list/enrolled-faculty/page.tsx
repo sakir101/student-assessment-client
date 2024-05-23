@@ -18,7 +18,10 @@ import { useGetInterestQuery } from "@/redux/api/interestApi";
 import Loading from "@/app/loading";
 import { universityOptions } from "@/constant/global";
 import SATable from "@/components/ui/Table";
-import { useGetEnrollFacultyQuery } from "@/redux/api/studentApi";
+import {
+  useGetEnrollFacultyQuery,
+  useUnenrollFacultyMutation,
+} from "@/redux/api/studentApi";
 
 const { confirm } = Modal;
 const EnrolledFacultyList = () => {
@@ -76,7 +79,8 @@ const EnrolledFacultyList = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  // const [enrollFaculty, { isSuccess, isError }] = useEnrollFacultyMutation();
+  const [unenrollFaculty, { isSuccess, isError }] =
+    useUnenrollFacultyMutation();
 
   const interests = interestData?.interest;
   const interestOptions = interests?.map((interest) => {
@@ -117,7 +121,7 @@ const EnrolledFacultyList = () => {
   const showModal = async (id: string) => {
     setIsModalOpen(true);
     confirm({
-      title: "Are you sure you want to enroll under this faculty?",
+      title: "Are you sure you want to unenroll from this faculty?",
       icon: <ExclamationCircleFilled />,
       okText: "Yes",
       okType: "danger",
@@ -131,19 +135,19 @@ const EnrolledFacultyList = () => {
     });
   };
   const handleOk = async (id: string) => {
-    // const facultyData = { faculty: [id] };
+    const facultyData = { faculty: [id] };
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
     try {
-      // await enrollFaculty({ data: facultyData, id: userId });
-      // refetch();
-      // setIsModalOpen(false);
-      // message.destroy(key);
-      // message.success("Enroll Faculty successful");
+      await unenrollFaculty({ data: facultyData, id: userId });
+      refetch();
+      setIsModalOpen(false);
+      message.destroy(key);
+      message.success("Unenroll Faculty successful");
     } catch (err: any) {
-      // setIsModalOpen(false);
-      // message.destroy(key);
-      // message.error(err.message);
+      setIsModalOpen(false);
+      message.destroy(key);
+      message.error(err.message);
     }
   };
   const handleClose = () => {

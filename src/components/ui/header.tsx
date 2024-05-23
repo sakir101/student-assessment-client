@@ -4,7 +4,12 @@ import { Avatar, Button, Dropdown, Layout, Row, Space } from "antd";
 import type { MenuProps } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { removeUserInfo } from "@/services/auth.service";
-import { authKey, updProfileStudent, userUpdPass } from "@/constant/storageKey";
+import {
+  authKey,
+  updProfileFaculty,
+  updProfileStudent,
+  userUpdPass,
+} from "@/constant/storageKey";
 import { useRouter } from "next/navigation";
 
 const { Header: AntHeader } = Layout;
@@ -15,6 +20,7 @@ const Header = () => {
     removeUserInfo(authKey);
     removeUserInfo(userUpdPass);
     removeUserInfo(updProfileStudent);
+    removeUserInfo(updProfileFaculty);
     router.push("/login");
   };
   const items: MenuProps["items"] = [

@@ -11,18 +11,17 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { RadioChangeEvent } from "antd";
-
 import React from "react";
 import { FacultyInterest } from "@/types";
 
 const { TabPane } = Tabs;
-type TabPosition = "left" | "right" | "top" | "bottom";
+type TabPosition = "top";
 
 const Page = () => {
   const query: Record<string, any> = {};
   const [id, setId] = useState<string>("");
 
-  const [mode, setMode] = useState<TabPosition>("left");
+  const [mode, setMode] = useState<TabPosition>("top");
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -54,7 +53,7 @@ const Page = () => {
     },
     { refetchOnMountOrArgChange: true }
   );
-  console.log(data1);
+
   const interestData = data1?.interest;
   const meta = data1?.meta;
 
@@ -71,35 +70,45 @@ const Page = () => {
           <div className="mt-5 grid grid-cols-2 items-center mx-auto ">
             <div>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">University</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  University
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">Employee ID</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  Employee ID
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">Contact Number</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  Contact Number
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">Email</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  Email
+                </span>
               </p>
             </div>
 
             <div>
               <p className="mb-5">
-                <span className="text-lg font-semibold">
+                <span className="text-base lg:text-lg font-semibold">
                   {data?.institution}
                 </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg font-semibold">{data?.facultyId}</span>
+                <span className="text-base lg:text-lg font-semibold">
+                  {data?.facultyId}
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg font-semibold">
+                <span className="text-base lg:text-lg font-semibold">
                   {data?.contactNum}
                 </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg font-semibold">
+                <span className="text-base lg:text-lg font-semibold">
                   {data?.user?.email}
                 </span>
               </p>
@@ -144,26 +153,19 @@ const Page = () => {
                   />
                 </div>
               </div>
-              <div className="text-center text-xl mt-5">
+              <div className="text-center text-lg lg:text-xl mt-5">
                 <span>
                   {data?.firstName} {data?.middleName} {data?.lastName}
                 </span>
               </div>
               <div className="divider"></div>
-              <div className="flex justify-center mx-auto">
-                <Tabs
-                  defaultActiveKey="1"
-                  tabPosition={mode}
-                  onChange={onChange}
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  {items.map((item) => (
-                    <TabPane key={item.key} tab={item.label}>
-                      {item.children}
-                    </TabPane>
-                  ))}
-                </Tabs>
-              </div>
+              <Tabs defaultActiveKey="1" centered onChange={onChange}>
+                {items.map((item) => (
+                  <TabPane key={item.key} tab={item.label}>
+                    <div className="flex justify-center">{item.children}</div>
+                  </TabPane>
+                ))}
+              </Tabs>
             </div>
           )}
         </>

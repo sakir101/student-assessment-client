@@ -86,6 +86,15 @@ export const studentApi = baseApi.injectEndpoints({
             invalidatesTags: [tagTypes.student],
         }),
 
+        unenrollFaculty: build.mutation({
+            query: ({ data, id }: { data: any; id: string }) => ({
+                url: `${Student_URL}/${id}/unenroll-faculty`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.student],
+        }),
+
         getEnrollFaculty: build.query({
             query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
                 url: `${Student_URL}/getEnrolledFaculties/${id}`,
@@ -207,5 +216,6 @@ export const {
     useGetAssignSkillQuery,
     useGetAssignRelatedWorksQuery,
     useUpdateStudentProfileMutation,
-    useGetSingleSkillQuery
+    useGetSingleSkillQuery,
+    useUnenrollFacultyMutation
 } = studentApi

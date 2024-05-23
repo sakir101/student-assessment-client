@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { RadioChangeEvent } from "antd";
-
 import React from "react";
 import {
   useGetAssignInterestQuery,
@@ -75,8 +74,6 @@ const Page = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(data3);
-
   const onChange = (key: string) => {};
 
   const items: TabsProps["items"] = [
@@ -88,27 +85,37 @@ const Page = () => {
           <div className="mt-5 grid grid-cols-2 gap-0 justify-center items-center mx-auto ">
             <div>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">University</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  University
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">Student ID</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  Student ID
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg text-gray-600 ">Gender</span>
+                <span className="text-base lg:text-lg text-gray-600 ">
+                  Gender
+                </span>
               </p>
             </div>
 
             <div>
               <p className="mb-5">
-                <span className="text-lg font-semibold">
+                <span className="text-base lg:text-lg font-semibold">
                   {data?.institution}
                 </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg font-semibold">{data?.studentId}</span>
+                <span className="text-base lg:text-lg font-semibold">
+                  {data?.studentId}
+                </span>
               </p>
               <p className="mb-5">
-                <span className="text-lg font-semibold">{data?.gender}</span>
+                <span className="text-base lg:text-lg font-semibold">
+                  {data?.gender}
+                </span>
               </p>
             </div>
           </div>

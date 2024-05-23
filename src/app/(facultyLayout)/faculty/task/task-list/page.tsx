@@ -2,7 +2,10 @@
 
 import Loading from "@/app/loading";
 import { ReloadOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { useGetCreatedTasksQuery } from "@/redux/api/facultyApi";
+import {
+  useDeleteSpecificTaskMutation,
+  useGetCreatedTasksQuery,
+} from "@/redux/api/facultyApi";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, Modal, Pagination, Select, message } from "antd";
@@ -74,6 +77,8 @@ const TaskList = () => {
   const taskData = data?.task;
   const meta = data?.meta;
 
+  const [deleteSpecificTask] = useDeleteSpecificTaskMutation();
+
   useEffect(() => {
     setSize(meta?.limit);
     setPage(meta?.page);
@@ -83,36 +88,35 @@ const TaskList = () => {
     setPage(currentPage);
   };
 
-  const showModal = async (id: string) => {
+  const showModal = async (taskId: string) => {
     setIsModalOpen(true);
     confirm({
-      title: "Are you sure delete this hint?",
+      title: "Are you sure delete this task?",
       icon: <ExclamationCircleFilled />,
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
       onOk() {
-        handleOk(id);
+        handleOk(taskId);
       },
       onCancel() {
         handleClose();
       },
     });
   };
-  const handleOk = async (hintId: string) => {
+  const handleOk = async (taskId: string) => {
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
     try {
-      // await deleteTaskHint({ taskId, hintId });
-      // refetch();
-      // setIsModalOpen(false);
-      // message.destroy(key);
-      // message.success("Hint Deleted successfully");
-    } catch (err: any) {
-      //   console.error(err.message);
+      await deleteSpecificTask({ id: userId, taskId });
+      refetch();
       setIsModalOpen(false);
       message.destroy(key);
-      message.error(err.message);
+      message.success("Task Deleted successfully");
+    } catch (err: any) {
+      setIsModalOpen(false);
+      message.destroy(key);
+      message.error("Task Deleted failed");
     }
   };
 
@@ -189,7 +193,12 @@ const TaskList = () => {
                   Update
                 </button>
               </Link>
-              <button className="btn btn-sm mx-4 bg-red-500">Delete</button>
+              <button
+                className="btn btn-sm mx-4 bg-red-500"
+                onClick={() => showModal(item?.id)}
+              >
+                Delete
+              </button>
               <Link href={`/faculty/task/task-list/${item?.id}`}>
                 <button className="btn btn-sm bg-white-400">View</button>
               </Link>
