@@ -54,6 +54,14 @@ export const studentApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.student],
         }),
 
+        getSingleSkill: build.query({
+            query: ({ id, interestId }: { id: string, interestId: string }) => ({
+                url: `${Student_URL}/getSingleSkill/${id}/${interestId}`,
+                method: "GET",
+            }),
+            providesTags: [tagTypes.student],
+        }),
+
         getAssignRelatedWorks: build.query({
             query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
                 url: `${Student_URL}/getRelatedWorks/${id}`,
@@ -148,10 +156,10 @@ export const studentApi = baseApi.injectEndpoints({
         }),
 
         updateStudentProfile: build.mutation({
-            query: ({ formData, id }) => ({
+            query: ({ data, id }) => ({
                 url: `/user/update-student/${id}`,
                 method: "PATCH",
-                formData,
+                data,
                 contentType: "multipart/form-data"
             }),
             invalidatesTags: [tagTypes.student],
@@ -198,5 +206,6 @@ export const {
     useGetAllFeedbackTaskQuery,
     useGetAssignSkillQuery,
     useGetAssignRelatedWorksQuery,
-    useUpdateStudentProfileMutation
+    useUpdateStudentProfileMutation,
+    useGetSingleSkillQuery
 } = studentApi

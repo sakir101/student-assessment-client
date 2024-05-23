@@ -1,7 +1,10 @@
 "use client";
 
 import { useDeleteSkillMutation } from "@/redux/api/skillStudentApi";
-import { useGetAssignSkillQuery } from "@/redux/api/studentApi";
+import {
+  useGetAssignSkillQuery,
+  useGetSingleStudentQuery,
+} from "@/redux/api/studentApi";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
 import { useEffect, useState } from "react";
@@ -31,6 +34,7 @@ const SkillView = () => {
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [interestID, setInterestID] = useState<string>("");
   const [statusChange, setStatusChange] = useState<string>("");
+  const [studentId, setStudentId] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [selectedValue, setSelectedValue] = useState(undefined);
 
@@ -71,6 +75,22 @@ const SkillView = () => {
 
   const interestData = data?.skill;
   const meta = data?.meta;
+
+  // console.log(interestData);
+
+  const { data: studentData } = useGetSingleStudentQuery(
+    userId,
+
+    { refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (studentData) {
+      setStudentId(studentData?.id);
+    }
+  }, [studentData]);
+
+  // console.log(studentId);
 
   const { data: singleInterestData } = useGetSingleInterestQuery(interestID, {
     refetchOnMountOrArgChange: true,
@@ -192,11 +212,19 @@ const SkillView = () => {
     {
       title: "Status",
       render: function (data: any) {
-        if (data.SkillStudent && data.SkillStudent.length > 0) {
-          const status = data.SkillStudent[0].status;
-          return status === "NotSet" ? "Not Set" : status;
+        if (studentId && data.SkillStudent && data.SkillStudent.length > 0) {
+          const matchedStudent = data.SkillStudent.find(
+            (student: any) => student.studentId === studentId
+          );
+
+          if (matchedStudent) {
+            const status = matchedStudent.status;
+            return status === "NotSet" ? "Not Set" : status;
+          } else {
+            return "Student not found";
+          }
         } else {
-          return status;
+          return "No SkillStudent data";
         }
       },
     },

@@ -1,7 +1,10 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { useGetAssignRelatedWorksQuery } from "@/redux/api/studentApi";
+import {
+  useGetAssignRelatedWorksQuery,
+  useGetSingleStudentQuery,
+} from "@/redux/api/studentApi";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
 import { Button, Input, Pagination } from "antd";
@@ -17,6 +20,7 @@ const RelatedWorksView = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [studentId, setStudentId] = useState<string>("");
 
   query["size"] = size;
   query["page"] = page;
@@ -51,6 +55,18 @@ const RelatedWorksView = () => {
 
   const relatedWorksData = data?.relatedWorks;
   const meta = data?.meta;
+
+  const { data: studentData } = useGetSingleStudentQuery(
+    userId,
+
+    { refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (studentData) {
+      setStudentId(studentData?.id);
+    }
+  }, [studentData]);
 
   const handleDeleteSuccess = () => {
     refetch();
@@ -110,27 +126,34 @@ const RelatedWorksView = () => {
         )}
       </div>
       <div className="my-4">
-        {relatedWorksData?.map((item) => (
-          <div
-            key={item?.id}
-            className="p-3 bg-slate-300 shadow-md my-4 rounded-md"
-          >
-            <div className="bg-stone-400 font-semibold p-3 rounded-md inline-block">
-              <p className="inline-block">{item?.title}</p>
-            </div>
+        {relatedWorksData?.map((item) => {
+          const matchedStudent = item.RelatedWorksStudent.find(
+            (student) => student.studentId === studentId
+          );
 
-            <div>
-              <RelatedWorks
-                key={item.id}
-                interestId={item?.RelatedWorksStudent[0]?.interestId}
-                description={item?.RelatedWorksStudent[0]?.description}
-                title={item?.title}
-                onDeleteSuccess={handleDeleteSuccess}
-                onUpdateSuccess={handleUpdateSuccess}
-              />
+          if (!matchedStudent) return null;
+
+          return (
+            <div
+              key={item.id}
+              className="p-3 bg-slate-300 shadow-md my-4 rounded-md"
+            >
+              <div className="bg-stone-400 font-semibold p-3 rounded-md inline-block">
+                <p className="inline-block">{item.title}</p>
+              </div>
+              <div>
+                <RelatedWorks
+                  key={item.id}
+                  interestId={matchedStudent.interestId}
+                  description={matchedStudent.description}
+                  title={item.title}
+                  onDeleteSuccess={handleDeleteSuccess}
+                  onUpdateSuccess={handleUpdateSuccess}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <Pagination
         current={page}
