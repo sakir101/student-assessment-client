@@ -3,6 +3,7 @@
 import Loading from "@/app/loading";
 import {
   useGetAssignExpertiseQuery,
+  useGetAssignRelatedWorksFacultyQuery,
   useGetSingleFacultyByFacultyIdQuery,
 } from "@/redux/api/facultyApi";
 import { Tabs } from "antd";
@@ -12,7 +13,11 @@ import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { RadioChangeEvent } from "antd";
 import React from "react";
-import { FacultyInterest } from "@/types";
+import "react-quill/dist/quill.bubble.css";
+import dynamic from "next/dynamic";
+import "../../../../../../components/QuillCss/page.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const { TabPane } = Tabs;
 type TabPosition = "top";
@@ -46,7 +51,7 @@ const Page = () => {
 
   const userId = data?.user?.id;
 
-  const { data: data1 } = useGetAssignExpertiseQuery(
+  const { data: data1, isLoading: loading2 } = useGetAssignExpertiseQuery(
     {
       id: userId,
       arg: query,
@@ -57,9 +62,16 @@ const Page = () => {
   const interestData = data1?.interest;
   const meta = data1?.meta;
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const { data: data2, isLoading: loading3 } =
+    useGetAssignRelatedWorksFacultyQuery(
+      {
+        id: userId,
+        arg: query,
+      },
+      { refetchOnMountOrArgChange: true }
+    );
+
+  const onChange = (key: string) => {};
 
   const items: TabsProps["items"] = [
     {
@@ -126,9 +138,66 @@ const Page = () => {
             <h2 className="me-4">Expertise Titles</h2>
           </div>
           <div>
-            {data1?.interest.map((interest, index) => (
-              <p key={index}>{interest.title}</p>
-            ))}
+            {loading2 ? (
+              <Loading />
+            ) : (
+              <>
+                {Object.keys(data1 || {}).length > 0 ? (
+                  <div>
+                    {data1?.interest.map((interest, index) => (
+                      <p key={index}>{interest.title}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <div>No Expertise to show</div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: "Work Field",
+      children: (
+        <div className="mt-5 flex justify-center items-center mx-auto ">
+          <div>
+            {loading3 ? (
+              <Loading />
+            ) : (
+              <>
+                {Object.keys(data2 || {}).length > 0 ? (
+                  <div>
+                    {data2?.relatedWorks.map((relatedWork, index) => {
+                      const matchedFaculty =
+                        relatedWork.RelatedWorksFaculty.find(
+                          (faculty) => faculty.facultyId === id
+                        );
+
+                      const description = matchedFaculty
+                        ? matchedFaculty.description
+                        : "Not Available";
+
+                      return (
+                        <div key={index}>
+                          <p className="text-center font-bold text-lg mb-2">
+                            {relatedWork.title}
+                          </p>
+                          <ReactQuill
+                            value={description}
+                            readOnly={true}
+                            theme={"bubble"}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div>No Work Field to show</div>
+                )}
+              </>
+            )}
           </div>
         </div>
       ),

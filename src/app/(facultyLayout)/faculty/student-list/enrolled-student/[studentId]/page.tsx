@@ -48,7 +48,7 @@ const Page = () => {
 
   const userId = data?.user?.id;
 
-  const { data: data1 } = useGetAssignInterestQuery(
+  const { data: data1, isLoading: loading1 } = useGetAssignInterestQuery(
     {
       id: userId,
       arg: query,
@@ -59,14 +59,14 @@ const Page = () => {
   const interestData = data1?.interest;
   const meta = data1?.meta;
 
-  const { data: data2 } = useGetAssignSkillQuery(
+  const { data: data2, isLoading: loading2 } = useGetAssignSkillQuery(
     {
       id: userId,
       arg: query,
     },
     { refetchOnMountOrArgChange: true }
   );
-  const { data: data3 } = useGetAssignRelatedWorksQuery(
+  const { data: data3, isLoading: loading3 } = useGetAssignRelatedWorksQuery(
     {
       id: userId,
       arg: query,
@@ -131,9 +131,21 @@ const Page = () => {
             <h2 className="me-4">Field Titles</h2>
           </div>
           <div>
-            {data1?.interest.map((interest, index) => (
-              <p key={index}>{interest.title}</p>
-            ))}
+            {loading1 ? (
+              <Loading />
+            ) : (
+              <>
+                {Object.keys(data1 || {}).length > 0 ? (
+                  <div>
+                    {data1?.interest.map((interest, index) => (
+                      <p key={index}>{interest.title}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <div>No Interest is set</div>
+                )}
+              </>
+            )}
           </div>
         </div>
       ),
@@ -147,25 +159,34 @@ const Page = () => {
             <h2 className="me-4">Field Titles</h2>
           </div>
           <div>
-            {data2?.skill.map((skill, index) => {
-              // Find the matched student entry in SkillStudent array
-              const matchedStudent = skill.SkillStudent.find(
-                (student) => student.studentId === id
-              );
+            {loading2 ? (
+              <Loading />
+            ) : (
+              <>
+                {Object.keys(data2 || {}).length > 0 ? (
+                  <div>
+                    {data2?.skill.map((skill, index) => {
+                      const matchedStudent = skill.SkillStudent.find(
+                        (student) => student.studentId === id
+                      );
+                      const status = matchedStudent
+                        ? matchedStudent.status
+                        : "Not Available";
 
-              // Extract status if matchedStudent exists
-              const status = matchedStudent
-                ? matchedStudent.status
-                : "Not Available";
-
-              return (
-                <div key={index}>
-                  <p>
-                    {skill.title} ({status})
-                  </p>
-                </div>
-              );
-            })}
+                      return (
+                        <div key={index}>
+                          <p>
+                            {skill.title} ({status})
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div>No skill is set</div>
+                )}
+              </>
+            )}
           </div>
         </div>
       ),
@@ -176,30 +197,40 @@ const Page = () => {
       children: (
         <div className="mt-5 flex justify-center items-center mx-auto ">
           <div>
-            {data3?.relatedWorks.map((relatedWork, index) => {
-              // Find the matched student entry in SkillStudent array
-              const matchedStudent = relatedWork.RelatedWorksStudent.find(
-                (student) => student.studentId === id
-              );
+            {loading3 ? (
+              <Loading />
+            ) : (
+              <>
+                {Object.keys(data3 || {}).length > 0 ? (
+                  <div>
+                    {data3?.relatedWorks.map((relatedWork, index) => {
+                      const matchedStudent =
+                        relatedWork.RelatedWorksStudent.find(
+                          (student) => student.studentId === id
+                        );
+                      const description = matchedStudent
+                        ? matchedStudent.description
+                        : "Not Available";
 
-              // Extract status if matchedStudent exists
-              const description = matchedStudent
-                ? matchedStudent.description
-                : "Not Available";
-
-              return (
-                <div key={index}>
-                  <p className="text-center font-bold text-lg mb-2">
-                    {relatedWork.title}
-                  </p>
-                  <ReactQuill
-                    value={description}
-                    readOnly={true}
-                    theme={"bubble"}
-                  />
-                </div>
-              );
-            })}
+                      return (
+                        <div key={index}>
+                          <p className="text-center font-bold text-lg mb-2">
+                            {relatedWork.title}
+                          </p>
+                          <ReactQuill
+                            value={description}
+                            readOnly={true}
+                            theme={"bubble"}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div>No work field is set</div>
+                )}
+              </>
+            )}
           </div>
         </div>
       ),

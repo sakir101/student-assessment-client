@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
-import { useGetAssignRelatedWorksFacultyQuery } from "@/redux/api/facultyApi";
+import {
+  useGetAssignRelatedWorksFacultyQuery,
+  useGetSingleFacultyQuery,
+} from "@/redux/api/facultyApi";
 import Loading from "@/app/loading";
 import RelatedWorksFaculty from "@/components/RelatedWorksFaculty/RelatedWorksFaculty";
 
@@ -17,6 +20,7 @@ const RelatedWorkViewFaculty = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [facultyId, setFacultyId] = useState<string>("");
 
   query["size"] = size;
   query["page"] = page;
@@ -51,6 +55,18 @@ const RelatedWorkViewFaculty = () => {
 
   const relatedWorksData = data?.relatedWorks;
   const meta = data?.meta;
+
+  const { data: facultyData } = useGetSingleFacultyQuery(
+    userId,
+
+    { refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (facultyData) {
+      setFacultyId(facultyData?.id);
+    }
+  }, [facultyData]);
 
   const handleDeleteSuccess = () => {
     refetch();
@@ -109,27 +125,34 @@ const RelatedWorkViewFaculty = () => {
         )}
       </div>
       <div className="my-4">
-        {relatedWorksData?.map((item) => (
-          <div
-            key={item?.id}
-            className="p-3 bg-slate-300 shadow-md my-4 rounded-md"
-          >
-            <div className="bg-stone-400 font-semibold p-3 rounded-md inline-block">
-              <p className="inline-block">{item?.title}</p>
-            </div>
+        {relatedWorksData?.map((item) => {
+          const matchedFaculty = item.RelatedWorksFaculty.find(
+            (faculty) => faculty.facultyId === facultyId
+          );
 
-            <div>
-              <RelatedWorksFaculty
-                key={item.id}
-                interestId={item?.RelatedWorksFaculty[0]?.interestId}
-                description={item?.RelatedWorksFaculty[0]?.description}
-                title={item?.title}
-                onDeleteSuccess={handleDeleteSuccess}
-                onUpdateSuccess={handleUpdateSuccess}
-              />
+          if (!matchedFaculty) return null;
+
+          return (
+            <div
+              key={item.id}
+              className="p-3 bg-slate-300 shadow-md my-4 rounded-md"
+            >
+              <div className="bg-stone-400 font-semibold p-3 rounded-md inline-block">
+                <p className="inline-block">{item.title}</p>
+              </div>
+              <div>
+                <RelatedWorksFaculty
+                  key={item.id}
+                  interestId={matchedFaculty.interestId}
+                  description={matchedFaculty.description}
+                  title={item.title}
+                  onDeleteSuccess={handleDeleteSuccess}
+                  onUpdateSuccess={handleUpdateSuccess}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <Pagination
         current={page}

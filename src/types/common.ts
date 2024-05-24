@@ -59,7 +59,7 @@ export type IRelatedWorkFaculty = {
     RelatedWorksFaculty: {
         interestId: string;
         description: string;
-        studentId: string;
+        facultyId: string;
     }[];
 };
 
