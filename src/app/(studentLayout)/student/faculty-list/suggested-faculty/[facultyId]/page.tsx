@@ -133,20 +133,22 @@ const Page = () => {
       key: "2",
       label: "Expertise",
       children: (
-        <div className="mt-5 grid grid-cols-2 items-center mx-auto ">
-          <div>
-            <h2 className="me-4">Expertise Titles</h2>
-          </div>
+        <div className="mt-5">
           <div>
             {loading2 ? (
               <Loading />
             ) : (
               <>
                 {Object.keys(data1 || {}).length > 0 ? (
-                  <div>
-                    {data1?.interest.map((interest, index) => (
-                      <p key={index}>{interest.title}</p>
-                    ))}
+                  <div className="grid grid-cols-2 items-center mx-auto">
+                    <div>
+                      <h2 className="me-4">Expertise Titles</h2>
+                    </div>
+                    <div>
+                      {data1?.interest.map((interest, index) => (
+                        <p key={index}>{interest.title}</p>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div>No Expertise to show</div>

@@ -1,20 +1,36 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { useGetSingleFacultyQuery } from "@/redux/api/facultyApi";
+import {
+  useGetSingleAdminByAdminIdQuery,
+  useGetSingleAdminQuery,
+} from "@/redux/api/adminApi";
 import { getUserInfo } from "@/services/auth.service";
 import Image from "next/image";
-import React from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-const AccountFaculty = () => {
-  const { userId: id } = getUserInfo() as any;
+const AdminProfile = () => {
+  const [id, setId] = useState<string>("");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const { data, isLoading, refetch } = useGetSingleFacultyQuery(
+  useEffect(() => {
+    const url = `${pathname}?${searchParams}`;
+    const match = url.match(/\/([^\/?]+)\?$/);
+    const extractId = match ? match[1] : null;
+    if (extractId !== null) {
+      setId(extractId);
+    }
+  }, [pathname, searchParams]);
+
+  const { data, isLoading, refetch } = useGetSingleAdminByAdminIdQuery(
     id,
 
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(id);
   return (
     <div className="mt-5 lg:mt-7 p-4">
       {isLoading ? (
@@ -47,10 +63,9 @@ const AccountFaculty = () => {
               <div className="mt-5 grid grid-cols-2 justify-items-center items-center mx-auto ">
                 <div>
                   <p className="mb-5">
-                    <span className="text-lg text-gray-600 ">University</span>
-                  </p>
-                  <p className="mb-5">
-                    <span className="text-lg text-gray-600 ">Employee ID</span>
+                    <span className="text-lg text-gray-600 ">
+                      Super Admin ID
+                    </span>
                   </p>
                   <p className="mb-5">
                     <span className="text-lg text-gray-600 ">
@@ -60,16 +75,14 @@ const AccountFaculty = () => {
                   <p className="mb-5">
                     <span className="text-lg text-gray-600 ">Email</span>
                   </p>
+                  <p className="mb-5">
+                    <span className="text-lg text-gray-600 ">Address</span>
+                  </p>
                 </div>
                 <div>
                   <p className="mb-5">
                     <span className="text-lg font-semibold">
-                      {data?.institution}
-                    </span>
-                  </p>
-                  <p className="mb-5">
-                    <span className="text-lg font-semibold">
-                      {data?.facultyId}
+                      {data?.adminId}
                     </span>
                   </p>
                   <p className="mb-5">
@@ -82,6 +95,11 @@ const AccountFaculty = () => {
                       {data?.user?.email}
                     </span>
                   </p>
+                  <p className="mb-5">
+                    <span className="text-lg font-semibold">
+                      {data?.address}
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -92,4 +110,4 @@ const AccountFaculty = () => {
   );
 };
 
-export default AccountFaculty;
+export default AdminProfile;

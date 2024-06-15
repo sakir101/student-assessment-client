@@ -15,7 +15,7 @@ const CareerGuidePage: React.FC = () => {
   const { data, isLoading } = useGetCareerQuery(id, {
     refetchOnMountOrArgChange: true,
   });
-  console.log(studentData);
+
   const categoryNames: string[] = [
     "CategoryA",
     "CategoryB",

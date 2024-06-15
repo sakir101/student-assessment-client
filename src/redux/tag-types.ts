@@ -2,24 +2,34 @@ export enum tagTypes {
     user = "user",
     student = "student",
     faculty = "faculty",
+    superAdmin = "superAdmin",
+    admin = "admin",
     interest = "interest",
     skillStudent = "skillStudent",
     relatedWorksStudent = "relatedWorksStudent",
     relatedWorksFacultyApi = "relatedWorksFaculty",
     interestStudent = "interestStudent",
     careerGuide = "careerGuide",
-    task = "tasks"
+    task = "tasks",
+    masterField = "masterField",
+    subField = "subField",
+    job = "job",
 }
 
 export const tagTypesList = [
     tagTypes.user,
     tagTypes.student,
     tagTypes.faculty,
+    tagTypes.superAdmin,
+    tagTypes.admin,
     tagTypes.interest,
     tagTypes.skillStudent,
     tagTypes.relatedWorksStudent,
     tagTypes.relatedWorksFacultyApi,
     tagTypes.interestStudent,
     tagTypes.careerGuide,
-    tagTypes.task
+    tagTypes.task,
+    tagTypes.masterField,
+    tagTypes.subField,
+    tagTypes.job,
 ];

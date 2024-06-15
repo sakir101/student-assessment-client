@@ -27,6 +27,33 @@ export type IInterest = {
     updatedAt: string;
 }
 
+export type IMasterField = {
+    id: string;
+    title: string;
+    category: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type ISubField = {
+    id: string;
+    title: string;
+    desc: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type IJob = {
+    id: string;
+    title: string;
+    jobLink: string;
+    desc: string;
+    status: string;
+    companyWebsite: string
+    createdAt: string;
+    updatedAt: string;
+}
+
 export type ISkill = {
     id: string;
     title: string;
@@ -92,6 +119,23 @@ export interface IStudent {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IAdmin {
+    activity: null | string;
+    address: string;
+    adminId: string;
+    contactNum: string;
+    createdAt: string;
+    firstName: string;
+    gender: string;
+    id: string;
+    lastName: string;
+    middleName: string;
+    profileImage: string;
+    updatedAt: string;
+    userId: string;
+}
+
 
 export interface FacultyInterest {
     interestId: string;

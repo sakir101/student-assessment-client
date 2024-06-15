@@ -27,7 +27,6 @@ const SignUpFaculty = () => {
     delete obj["file"];
 
     const data = JSON.stringify(obj);
-    console.log(data);
     const formData = new FormData();
 
     formData.append("file", file as Blob);

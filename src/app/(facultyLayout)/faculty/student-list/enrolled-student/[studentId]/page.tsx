@@ -126,20 +126,22 @@ const Page = () => {
       key: "2",
       label: "Interest Field",
       children: (
-        <div className="mt-5 grid grid-cols-2 items-center mx-auto ">
-          <div>
-            <h2 className="me-4">Field Titles</h2>
-          </div>
+        <div className="mt-5  ">
           <div>
             {loading1 ? (
               <Loading />
             ) : (
               <>
                 {Object.keys(data1 || {}).length > 0 ? (
-                  <div>
-                    {data1?.interest.map((interest, index) => (
-                      <p key={index}>{interest.title}</p>
-                    ))}
+                  <div className="grid grid-cols-2 items-center mx-auto">
+                    <div>
+                      <h2 className="me-4">Field Titles</h2>
+                    </div>
+                    <div>
+                      {data1?.interest.map((interest, index) => (
+                        <p key={index}>{interest.title}</p>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div>No Interest is set</div>
@@ -154,33 +156,35 @@ const Page = () => {
       key: "3",
       label: "Skill Field",
       children: (
-        <div className="mt-5 grid grid-cols-2 items-center mx-auto ">
-          <div>
-            <h2 className="me-4">Field Titles</h2>
-          </div>
+        <div className="mt-5  ">
           <div>
             {loading2 ? (
               <Loading />
             ) : (
               <>
                 {Object.keys(data2 || {}).length > 0 ? (
-                  <div>
-                    {data2?.skill.map((skill, index) => {
-                      const matchedStudent = skill.SkillStudent.find(
-                        (student) => student.studentId === id
-                      );
-                      const status = matchedStudent
-                        ? matchedStudent.status
-                        : "Not Available";
+                  <div className="grid grid-cols-2 items-center mx-auto">
+                    <div>
+                      <h2 className="me-4">Field Titles</h2>
+                    </div>
+                    <div>
+                      {data2?.skill.map((skill, index) => {
+                        const matchedStudent = skill.SkillStudent.find(
+                          (student) => student.studentId === id
+                        );
+                        const status = matchedStudent
+                          ? matchedStudent.status
+                          : "Not Available";
 
-                      return (
-                        <div key={index}>
-                          <p>
-                            {skill.title} ({status})
-                          </p>
-                        </div>
-                      );
-                    })}
+                        return (
+                          <div key={index}>
+                            <p>
+                              {skill.title} ({status})
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 ) : (
                   <div>No skill is set</div>

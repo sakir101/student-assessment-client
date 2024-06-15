@@ -6,6 +6,15 @@ import { baseApi } from "./baseApi"
 const Interest_URL = "/interest"
 export const interestApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
+        interestCreate: build.mutation({
+            query: ({ data }: { data: any }) => ({
+                url: `${Interest_URL}/create-interest`,
+                method: 'POST',
+                data
+            }),
+            invalidatesTags: [tagTypes.interest],
+        }),
+
         getInterest: build.query({
             query: (arg: Record<string, any>) => {
                 return {
@@ -30,7 +39,21 @@ export const interestApi = baseApi.injectEndpoints({
             }),
             providesTags: [tagTypes.interest],
         }),
+
+        updateInterest: build.mutation({
+            query: ({ data, id }: { data: any; id: string }) => ({
+                url: `${Interest_URL}/${id}/update-interest`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.interest],
+        }),
     }),
 })
 
-export const { useGetInterestQuery, useGetSingleInterestQuery } = interestApi
+export const {
+    useGetInterestQuery,
+    useGetSingleInterestQuery,
+    useInterestCreateMutation,
+    useUpdateInterestMutation
+} = interestApi

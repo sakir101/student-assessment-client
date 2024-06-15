@@ -1,22 +1,16 @@
 "use client";
 
-import { Button, Input, message, Modal, Select } from "antd";
-
-import { useEffect, useState } from "react";
-import { ReloadOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-
-import Image from "next/image";
-
-import Link from "next/link";
+import Loading from "@/app/loading";
+import SATable from "@/components/ui/Table";
+import { useGetAllAdminsQuery } from "@/redux/api/superAdmin";
 import { useDebounced } from "@/redux/hooks";
 import { getUserInfo } from "@/services/auth.service";
-import { useGetInterestQuery } from "@/redux/api/interestApi";
-import { useGetEnrolledStudentListQuery } from "@/redux/api/facultyApi";
-import Loading from "@/app/loading";
-import { universityOptions } from "@/constant/global";
-import SATable from "@/components/ui/Table";
+import { Button, Input } from "antd";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const EnrolledStudentList = () => {
+const AdminView = () => {
   const query: Record<string, any> = {};
 
   const [page, setPage] = useState<number>();
@@ -24,9 +18,6 @@ const EnrolledStudentList = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [interests, setInterests] = useState<string>("");
-  const [institution, setInstitution] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   query["size"] = size;
   query["page"] = page;
@@ -40,12 +31,6 @@ const EnrolledStudentList = () => {
     }
   }, [searchTerm]);
 
-  if (interests?.length > 0) {
-    query["interests"] = interests;
-  }
-  if (institution?.length > 0) {
-    query["institution"] = institution;
-  }
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,
@@ -57,35 +42,19 @@ const EnrolledStudentList = () => {
 
   const { userId } = getUserInfo() as any;
 
-  const { data: interestData } = useGetInterestQuery({
+  const { data, isLoading, refetch } = useGetAllAdminsQuery(query, {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data, isLoading, refetch } = useGetEnrolledStudentListQuery(
-    {
-      id: userId,
-      arg: query,
-    },
-    { refetchOnMountOrArgChange: true }
-  );
+  const adminList = data?.admin;
 
-  const newInterestData = interestData?.interest;
-  const interestOptions = newInterestData?.map((interest) => {
-    return {
-      label: interest?.title,
-      value: interest?.title,
-    };
-  });
-
-  const studentList = data?.student;
-
-  const newData = studentList?.map((studentItem) => ({
-    id: studentItem.id ?? "",
-    name: `${studentItem.firstName ?? ""} ${studentItem.middleName ?? ""} ${
-      studentItem.lastName ?? ""
+  const newData = adminList?.map((adminItem) => ({
+    id: adminItem.id ?? "",
+    name: `${adminItem.firstName ?? ""} ${adminItem.middleName ?? ""} ${
+      adminItem.lastName ?? ""
     }`,
-    institute: studentItem.institution ?? "",
-    profileimg: studentItem.profileImage ?? "",
+    adminId: adminItem.adminId ?? "",
+    profileimg: adminItem.profileImage ?? "",
   }));
 
   const meta = data?.meta;
@@ -94,16 +63,6 @@ const EnrolledStudentList = () => {
     setSize(meta?.limit);
     setPage(meta?.page);
   }, [meta]);
-
-  const handleChange = (value: string) => {
-    setPage(1);
-    setInterests(value);
-  };
-
-  const handleChangeUniversity = (value: string) => {
-    setPage(1);
-    setInstitution(value);
-  };
 
   const columns = [
     {
@@ -126,17 +85,16 @@ const EnrolledStudentList = () => {
       key: "name",
     },
     {
-      title: "University",
-      dataIndex: "institute",
-      key: "institute",
-      responsive: ["lg"],
+      title: "ID",
+      dataIndex: "adminId",
+      key: "adminId",
     },
     {
       title: "Account View",
       render: function (data: any) {
         return (
           <>
-            <Link href={`/faculty/student-list/enrolled-student/${data.id}`}>
+            <Link href={`/super_admin/manage-admin/${data.id}`}>
               <Button type="primary">View</Button>
             </Link>
           </>
@@ -155,18 +113,10 @@ const EnrolledStudentList = () => {
     setSortOrder(order === "ascend" ? "asc" : "desc");
   };
 
-  const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
-    setSearchTerm("");
-    setInstitution("");
-    setInterests("");
-  };
-
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Enrolled Students List
+        Admin List
       </h1>
 
       <div className="flex justify-center items-center mt-5 lg:mt-7">
@@ -185,39 +135,10 @@ const EnrolledStudentList = () => {
                     setSearchTerm(e.target.value);
                   }}
                 />
-                {(!!sortBy ||
-                  !!sortOrder ||
-                  !!searchTerm ||
-                  !!interests ||
-                  !!institution) && (
-                  <Button
-                    onClick={resetFilters}
-                    type="primary"
-                    style={{ margin: "0px 5px" }}
-                  >
-                    <ReloadOutlined />
-                  </Button>
-                )}
               </>
             )}
           </>
         )}
-      </div>
-      <div className="flex justify-center items-center mt-5 lg:mt-7">
-        <Select
-          defaultValue="Filter Interest"
-          className="w-full lg:w-1/4 mr-3"
-          onChange={handleChange}
-          options={interestOptions}
-          allowClear
-        />
-        <Select
-          defaultValue="Filter University"
-          className="w-full lg:w-1/4"
-          onChange={handleChangeUniversity}
-          options={universityOptions}
-          allowClear
-        />
       </div>
       <div className="my-10 lg:my-12 ">
         {isLoading ? (
@@ -238,7 +159,7 @@ const EnrolledStudentList = () => {
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-col justify-center items-center my-14 w-full lg:w-1/2">
               <p className="text-center text-red-700 font-bold text-lg">
-                No Students Found
+                No Admin is created
               </p>
             </div>
           </div>
@@ -248,4 +169,4 @@ const EnrolledStudentList = () => {
   );
 };
 
-export default EnrolledStudentList;
+export default AdminView;

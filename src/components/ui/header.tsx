@@ -8,6 +8,7 @@ import {
   authKey,
   updProfileFaculty,
   updProfileStudent,
+  updProfileSuperAdmin,
   userUpdPass,
 } from "@/constant/storageKey";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ const Header = () => {
     removeUserInfo(userUpdPass);
     removeUserInfo(updProfileStudent);
     removeUserInfo(updProfileFaculty);
+    removeUserInfo(updProfileSuperAdmin);
     router.push("/login");
   };
   const items: MenuProps["items"] = [

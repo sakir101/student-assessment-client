@@ -59,112 +59,209 @@ export const sidebarItems = (role: string) => {
 
   const commonAdminSidebarItems: MenuProps["items"] = [
     {
-      label: (
-        <Link className="hover:text-slate-400" href={`/${role}/manage-student`}>
-          Manage Students
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/manage-student`,
-    },
-    {
-      label: (
-        <Link className="hover:text-slate-400" href={`/${role}/manage-faculty`}>
-          Manage Faculties
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/manage-faculty`,
-    },
-  ];
-
-  const adminSidebarItems: MenuProps["items"] = [
-    ...defaultSidebarItems,
-    ...commonAdminSidebarItems,
-    {
-      label: (
-        <Link
-          className="hover:text-slate-400"
-          href={`/${role}/manage-universities`}
-        >
-          Manage Universities
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/manage-universities`,
-    },
-    {
-      label: (
-        <Link className="hover:text-slate-400" href={`/${role}/manage-skills`}>
-          Manage Skills
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/manage-skills`,
-    },
-    {
-      label: (
-        <Link
-          className="hover:text-slate-400"
-          href={`/${role}/manage-interests`}
-        >
-          Manage Interests
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/manage-interests`,
-    },
-    {
-      label: (
-        <Link
-          className="hover:text-slate-400"
-          href={`/${role}/manage-related-works`}
-        >
-          Manage Related Works
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/manage-related-works`,
-    },
-  ];
-
-  const superAdminSidebarItems: MenuProps["items"] = [
-    ...defaultSidebarItems,
-    ...commonAdminSidebarItems,
-    ...adminSidebarItems,
-    {
-      label: (
-        <Link className="hover:text-slate-400" href={`/${role}/admin`}>
-          Manage Admin
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/admin`,
-    },
-    {
-      label: (
-        <Link className="hover:text-slate-400" href={`/${role}/user`}>
-          Manage User
-        </Link>
-      ),
-      icon: <TableOutlined />,
-      key: `/${role}/user`,
-    },
-    {
-      label: "Manage permission",
-      key: "manage-permission",
-      icon: <AppstoreOutlined />,
+      label: "Manage Users",
+      icon: <HeartOutlined />,
+      key: "Manage Users",
       children: [
         {
           label: (
-            <Link className="hover:text-slate-400" href={`/${role}/permission`}>
-              View permissions
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/manage-faculties`}
+            >
+              Manage Faculties
             </Link>
           ),
-          key: `/${role}/permission`,
+          key: `/${role}/manage-faculties`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/manage-students`}
+            >
+              Manage Students
+            </Link>
+          ),
+          key: `/${role}/manage-students`,
         },
       ],
     },
+    {
+      label: "Manage Interests",
+      icon: <HeartOutlined />,
+      key: "Manage Interest",
+      children: [
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/manage-interest/create`}
+            >
+              Create
+            </Link>
+          ),
+          key: `/${role}/manage-interest/create`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/manage-interest/view`}
+            >
+              View
+            </Link>
+          ),
+          key: `/${role}/manage-interest/view`,
+        },
+      ],
+    },
+    {
+      label: "Master Field",
+      icon: <HeartOutlined />,
+      key: "Master Field",
+      children: [
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/master-field/create`}
+            >
+              Create
+            </Link>
+          ),
+          key: `/${role}/master-field/create`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/master-field/view`}
+            >
+              View
+            </Link>
+          ),
+          key: `/${role}/master-field/view`,
+        },
+      ],
+    },
+    {
+      label: "Sub Field",
+      icon: <HeartOutlined />,
+      key: "Sub Field",
+      children: [
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/sub-field/create`}
+            >
+              Create
+            </Link>
+          ),
+          key: `/${role}/sub-field/create`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/sub-field/view`}
+            >
+              View
+            </Link>
+          ),
+          key: `/${role}/sub-field/view`,
+        },
+      ],
+    },
+    {
+      label: "Job",
+      icon: <HeartOutlined />,
+      key: "Job",
+      children: [
+        {
+          label: (
+            <Link className="hover:text-slate-400" href={`/${role}/job/create`}>
+              Create
+            </Link>
+          ),
+          key: `/${role}/job/create`,
+        },
+        {
+          label: (
+            <Link className="hover:text-slate-400" href={`/${role}/job/view`}>
+              View
+            </Link>
+          ),
+          key: `/${role}/job/view`,
+        },
+      ],
+    },
+    {
+      label: "Course",
+      icon: <HeartOutlined />,
+      key: "Course",
+      children: [
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/course/create`}
+            >
+              Create
+            </Link>
+          ),
+          key: `/${role}/course/create`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/course/view`}
+            >
+              View
+            </Link>
+          ),
+          key: `/${role}/course/view`,
+        },
+      ],
+    },
+  ];
+
+  const adminSidebarItems: MenuProps["items"] = [...defaultSidebarItems];
+
+  const superAdminSidebarItems: MenuProps["items"] = [
+    ...defaultSidebarItems,
+    {
+      label: "Manage Admin",
+      icon: <HeartOutlined />,
+      key: "Manage Admin",
+      children: [
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/manage-admin/create`}
+            >
+              Create
+            </Link>
+          ),
+          key: `/${role}/manage-admin/create`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/manage-admin/view`}
+            >
+              View
+            </Link>
+          ),
+          key: `/${role}/manage-admin/view`,
+        },
+      ],
+    },
+    ...commonAdminSidebarItems,
   ];
 
   const facultySidebarItems: MenuProps["items"] = [

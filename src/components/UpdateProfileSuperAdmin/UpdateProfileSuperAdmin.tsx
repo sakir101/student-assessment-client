@@ -1,27 +1,27 @@
 "use client";
 
-import { getUserInfo } from "@/services/auth.service";
-import { Button, message } from "antd";
-import FormInput from "../Forms/FormInput";
-import UploadImage from "../ui/UploadImage";
-import FormSelectField from "../Forms/FormSelectField";
-import { genderOptions } from "@/constant/global";
-import Image from "next/image";
+import {
+  useGetSingleSuperAdminQuery,
+  useUpdateSuperAdminProfileMutation,
+} from "@/redux/api/superAdmin";
 import { useAppDispatch } from "@/redux/hooks";
 import { setImageUrl } from "@/redux/slice/imageSlice";
+import { getUserInfo } from "@/services/auth.service";
+import { Button, message } from "antd";
 import FormUpdate from "../Forms/FormUpdate";
-import {
-  useGetSingleFacultyQuery,
-  useUpdateFacultyProfileMutation,
-} from "@/redux/api/facultyApi";
+import UploadImage from "../ui/UploadImage";
+import Image from "next/image";
+import FormInput from "../Forms/FormInput";
+import FormSelectField from "../Forms/FormSelectField";
+import { genderOptions } from "@/constant/global";
 
-const UpdateProfileFaculty = () => {
+const UpdateProfileSuperAdmin = () => {
   const { userId } = getUserInfo() as any;
   const dispatch = useAppDispatch();
 
-  const [updateFacultyProfile] = useUpdateFacultyProfileMutation();
+  const [updateSuperAdminProfile] = useUpdateSuperAdminProfileMutation();
 
-  const { data, isLoading, refetch } = useGetSingleFacultyQuery(
+  const { data, isLoading, refetch } = useGetSingleSuperAdminQuery(
     userId,
 
     { refetchOnMountOrArgChange: true }
@@ -32,18 +32,18 @@ const UpdateProfileFaculty = () => {
     const obj = { ...values };
     let file = obj["file"];
     delete obj["file"];
-    const facultyData = {
-      faculty: {
+    const superAdminData = {
+      superAdmin: {
         firstName: obj.firstName,
         middleName: obj.middleName,
         lastName: obj.lastName,
         gender: obj.gender,
-        facultyId: obj.facultyId,
-        institution: obj.institution,
+        superAdminId: obj.superAdminId,
         contactNum: obj.contactNum,
+        address: obj.address,
       },
     };
-    const data = JSON.stringify(facultyData);
+    const data = JSON.stringify(superAdminData);
     const formData = new FormData();
 
     formData.append("file", file as Blob);
@@ -53,7 +53,7 @@ const UpdateProfileFaculty = () => {
     message.loading({ content: "Loading...", key });
 
     try {
-      updateFacultyProfile({ data: formData, id: userId })
+      updateSuperAdminProfile({ data: formData, id: userId })
         .unwrap()
         .then(() => {
           refetch();
@@ -76,16 +76,15 @@ const UpdateProfileFaculty = () => {
     middleName: data?.middleName || "",
     lastName: data?.lastName || "",
     gender: data?.gender || "",
-    facultyId: data?.facultyId || "",
-    institution: data?.institution || "",
+    superAdminId: data?.superAdminId || "",
     contactNum: data?.contactNum || "",
+    address: data?.address || "",
   };
-
   return (
     <div className="border-[1px] border-solid border-slate-300 p-3 lg:p-5">
       <FormUpdate
         submitHandler={onSubmit}
-        formKey="updProfileFaculty"
+        formKey="updProfileSuperAdmin"
         defaultValues={defaultValues}
       >
         <div className="w-full flex justify-center items-center mx-auto text-center">
@@ -132,7 +131,7 @@ const UpdateProfileFaculty = () => {
         </div>
         <div className="my-3">
           <FormInput
-            name="facultyId"
+            name="superAdminId"
             type="text"
             size="large"
             label="Faculty ID"
@@ -149,15 +148,15 @@ const UpdateProfileFaculty = () => {
         </div>
         <div className="my-3">
           <FormInput
-            name="institution"
+            name="contactNum"
             type="text"
             size="large"
-            label="Institution"
+            label="Contact Number"
           />
         </div>
         <div className="my-3">
           <FormInput
-            name="contactNum"
+            name="address"
             type="text"
             size="large"
             label="Contact Number"
@@ -174,4 +173,4 @@ const UpdateProfileFaculty = () => {
   );
 };
 
-export default UpdateProfileFaculty;
+export default UpdateProfileSuperAdmin;
