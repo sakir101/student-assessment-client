@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import Loading from "@/app/loading";
 import SATable from "@/components/ui/Table";
 import Link from "next/link";
+import { removeUserInfo } from "@/services/auth.service";
+import { updateSubField } from "@/constant/storageKey";
 
 const ViewSubField = () => {
   const query: Record<string, any> = {};
@@ -44,7 +46,7 @@ const ViewSubField = () => {
 
   const subFieldList = data?.subField;
   const meta = data?.meta;
-
+  removeUserInfo(updateSubField);
   useEffect(() => {
     setSize(meta?.limit);
     setPage(meta?.page);

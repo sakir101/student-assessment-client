@@ -1,18 +1,16 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
-
 import "react-quill/dist/quill.snow.css";
 import { useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
-import { useJobCreateMutation } from "@/redux/api/jobApi";
+import "../../../../../components/QuillCss/page.css";
+import { ChangeEvent, useState } from "react";
+import { useCourseCreateMutation } from "@/redux/api/courseApi";
 import { message } from "antd";
 import { formats, modules } from "@/components/ui/QuillModuleFormat";
-import "../../../../../components/QuillCss/page.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-const CreateJob = () => {
+const CreateCourse = () => {
   const {
     register,
     handleSubmit,
@@ -29,8 +27,8 @@ const CreateJob = () => {
     setStatusChange(value);
   };
 
-  const [jobCreate, { isSuccess, isError: err, isLoading }] =
-    useJobCreateMutation();
+  const [courseCreate, { isSuccess, isError: err, isLoading }] =
+    useCourseCreateMutation();
 
   const addDetails = async (value: any) => {
     console.log(description.length);
@@ -47,25 +45,25 @@ const CreateJob = () => {
 
     const data = {
       title: value.title,
-      jobLink: value.jobLink,
+      courseLink: value.courseLink,
       desc: description,
+      price: value.price,
       status: statusChange,
-      companyWebsite: value.companyWebsite,
     };
 
     setError("");
     setStatusError("");
 
     try {
-      jobCreate({ data })
+      courseCreate({ data })
         .unwrap()
         .then(() => {
-          message.success("Job added successfully");
+          message.success("Course added successfully");
           setDescription("");
           reset();
         })
         .catch((err) => {
-          message.error("Failed to add job");
+          message.error("Failed to add course");
         })
         .finally(() => {
           message.destroy(key);
@@ -82,7 +80,7 @@ const CreateJob = () => {
           className="text-center text-xl text-blue-500 font-semibold"
           style={{ margin: "15px 0px" }}
         >
-          Create Job
+          Create Course
         </h1>
         <div>
           <form onSubmit={handleSubmit(addDetails)}>
@@ -106,18 +104,18 @@ const CreateJob = () => {
             <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
               <label className="font-weight-bold">
                 {" "}
-                Job Link <span className="required"> * </span>{" "}
+                Course Link <span className="required"> * </span>{" "}
               </label>
               <br />
               <br />
               <input
                 className="input input-bordered w-full h-10"
                 type="text"
-                {...register("jobLink", { required: true })}
-                placeholder="Job Link"
+                {...register("courseLink", { required: true })}
+                placeholder="Course Link"
               />
               {errors.title && (
-                <p className="text-red-500">Job Link is required</p>
+                <p className="text-red-500">Course Link is required</p>
               )}
             </div>
             <div
@@ -142,7 +140,24 @@ const CreateJob = () => {
             <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
               <label className="font-weight-bold">
                 {" "}
-                Job Status <span className="required"> * </span>{" "}
+                Course Price <span className="required"> * </span>{" "}
+              </label>
+              <br />
+              <br />
+              <input
+                className="input input-bordered w-full h-10"
+                type="text"
+                {...register("price", { required: true })}
+                placeholder="Course Price"
+              />
+              {errors.title && (
+                <p className="text-red-500">Course Price is required</p>
+              )}
+            </div>
+            <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
+              <label className="font-weight-bold">
+                {" "}
+                Course Status <span className="required"> * </span>{" "}
               </label>
               <br />
               <br />
@@ -158,23 +173,6 @@ const CreateJob = () => {
               </select>
               {statusError && <p className="text-red-500">{statusError}</p>}
             </div>
-            <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
-              <label className="font-weight-bold">
-                {" "}
-                Company Website Link <span className="required"> * </span>{" "}
-              </label>
-              <br />
-              <br />
-              <input
-                className="input input-bordered w-full h-10"
-                type="text"
-                {...register("companyWebsite", { required: true })}
-                placeholder="Company Website"
-              />
-              {errors.title && (
-                <p className="text-red-500">Company website link is required</p>
-              )}
-            </div>
             <div className="flex justify-center">
               <button type="submit" className="btn btn-primary">
                 Submit
@@ -187,4 +185,4 @@ const CreateJob = () => {
   );
 };
 
-export default CreateJob;
+export default CreateCourse;

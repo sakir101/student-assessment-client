@@ -14,6 +14,7 @@ export enum tagTypes {
     masterField = "masterField",
     subField = "subField",
     job = "job",
+    course = "course",
 }
 
 export const tagTypesList = [
@@ -32,4 +33,5 @@ export const tagTypesList = [
     tagTypes.masterField,
     tagTypes.subField,
     tagTypes.job,
+    tagTypes.course
 ];

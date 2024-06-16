@@ -77,7 +77,6 @@ const InterestView = () => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
     try {

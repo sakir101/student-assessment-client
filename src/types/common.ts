@@ -54,6 +54,17 @@ export type IJob = {
     updatedAt: string;
 }
 
+export type ICourse = {
+    id: string;
+    title: string;
+    courseLink: string;
+    desc: string;
+    price: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export type ISkill = {
     id: string;
     title: string;

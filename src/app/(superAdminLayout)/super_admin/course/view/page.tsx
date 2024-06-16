@@ -1,17 +1,6 @@
 "use client";
 
-import Loading from "@/app/loading";
-import SATable from "@/components/ui/Table";
-import {
-  useDeleteJobMutation,
-  useGetJobQuery,
-  useGetSingleJobQuery,
-  useUpdateJobMutation,
-} from "@/redux/api/jobApi";
-import { useDebounced } from "@/redux/hooks";
-import { Button, Input, Modal, Select, message } from "antd";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import Link from "next/link";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -20,14 +9,24 @@ import {
 } from "@ant-design/icons";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+import { useForm } from "react-hook-form";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useDebounced } from "@/redux/hooks";
+import {
+  useDeleteCourseMutation,
+  useGetCourseQuery,
+  useGetSingleCourseQuery,
+  useUpdateCourseMutation,
+} from "@/redux/api/courseApi";
+import { Button, Input, Modal, Select, message } from "antd";
+import Loading from "@/app/loading";
+import { timeOptions } from "@/constant/global";
+import SATable from "@/components/ui/Table";
 import { formats, modules } from "@/components/ui/QuillModuleFormat";
 import "../../../../../components/QuillCss/page.css";
-import { timeOptions } from "@/constant/global";
-import Link from "next/link";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-const ViewJob = () => {
+const ViewCourse = () => {
   const {
     register,
     handleSubmit,
@@ -43,7 +42,7 @@ const ViewJob = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [jobID, setJobID] = useState<string>("");
+  const [courseID, setCourseID] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [createdAt, setCreatedAt] = useState<string>("");
@@ -91,11 +90,11 @@ const ViewJob = () => {
     setUpdatedAt(value);
   };
 
-  const { data, isLoading, refetch } = useGetJobQuery(query, {
+  const { data, isLoading, refetch } = useGetCourseQuery(query, {
     refetchOnMountOrArgChange: true,
   });
 
-  const jobList = data?.job;
+  const courseList = data?.course;
   const meta = data?.meta;
 
   useEffect(() => {
@@ -103,22 +102,22 @@ const ViewJob = () => {
     setPage(meta?.page);
   }, [meta]);
 
-  const { data: singleJobData, refetch: refetch1 } = useGetSingleJobQuery(
-    jobID,
+  const { data: singleCourseData, refetch: refetch1 } = useGetSingleCourseQuery(
+    courseID,
     {
       refetchOnMountOrArgChange: true,
     }
   );
 
   useEffect(() => {
-    setDescription(singleJobData?.desc);
-    setStatusChange(singleJobData?.status);
-  }, [singleJobData]);
-  const [updateJob] = useUpdateJobMutation();
-  const [deleteJob] = useDeleteJobMutation();
+    setDescription(singleCourseData?.desc);
+    setStatusChange(singleCourseData?.status);
+  }, [singleCourseData]);
+  const [updateCourse] = useUpdateCourseMutation();
+  const [deleteCourse] = useDeleteCourseMutation();
 
   const showModal = (id: string) => {
-    setJobID(id);
+    setCourseID(id);
     setIsModalOpen(true);
   };
 
@@ -136,60 +135,60 @@ const ViewJob = () => {
 
     const data = {
       title: value.title,
-      jobLink: value.jobLink,
+      courseLink: value.courseLink,
       desc: description,
+      price: value.price,
       status: statusChange,
-      companyWebsite: value.companyWebsite,
     };
 
     setError("");
     setStatusError("");
 
     try {
-      await updateJob({ data, id: jobID });
+      await updateCourse({ data, id: courseID });
       refetch();
       setIsModalOpen(false);
       message.destroy(key);
-      setJobID("");
-      message.success("Job updated successfully");
+      setCourseID("");
+      message.success("Course updated successfully");
     } catch (err: any) {
       setIsModalOpen(false);
       message.destroy(key);
-      setJobID("");
-      message.error("Job update failed");
+      setCourseID("");
+      message.error("Course update failed");
     }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setJobID("");
+    setCourseID("");
   };
 
   const showModal1 = async (id: string) => {
     setIsModalOpen1(true);
-    setJobID(id);
+    setCourseID(id);
   };
 
   const handleOk1 = async () => {
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
     try {
-      await deleteJob({ id: jobID });
+      await deleteCourse({ id: courseID });
       refetch();
       setIsModalOpen1(false);
       message.destroy(key);
-      setJobID("");
-      message.success("Job Deleted successfully");
+      setCourseID("");
+      message.success("Course Deleted successfully");
     } catch (err: any) {
       setIsModalOpen1(false);
       message.destroy(key);
-      setJobID("");
-      message.error("Job deleted failed");
+      setCourseID("");
+      message.error("Course deleted failed");
     }
   };
   const handleClose1 = () => {
     setIsModalOpen1(false);
-    setJobID("");
+    setCourseID("");
   };
 
   const columns = [
@@ -236,7 +235,7 @@ const ViewJob = () => {
       render: function (data: any) {
         return (
           <>
-            <Link href={`/super_admin/job/${data.id}`}>
+            <Link href={`/super_admin/course/${data.id}`}>
               <Button type="primary">View</Button>
             </Link>
           </>
@@ -264,7 +263,7 @@ const ViewJob = () => {
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Job List
+        Course List
       </h1>
 
       <div className="flex justify-center items-center mt-5 lg:mt-7">
@@ -320,7 +319,7 @@ const ViewJob = () => {
           <SATable
             loading={isLoading}
             columns={columns}
-            dataSource={jobList}
+            dataSource={courseList}
             pageSize={size}
             totalPages={meta?.total}
             showSizeChanger={true}
@@ -359,7 +358,7 @@ const ViewJob = () => {
                 className="input input-bordered w-full h-10"
                 type="text"
                 placeholder="Title"
-                defaultValue={singleJobData?.title}
+                defaultValue={singleCourseData?.title}
               />
               {errors.title && (
                 <p className="text-red-500">Title is required</p>
@@ -368,18 +367,18 @@ const ViewJob = () => {
             <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
               <label className="font-weight-bold">
                 {" "}
-                Job Link <span className="required"> * </span>{" "}
+                Course Link <span className="required"> * </span>{" "}
               </label>
               <br />
               <br />
               <input
                 className="input input-bordered w-full h-10"
                 type="text"
-                placeholder="Job Link"
-                defaultValue={singleJobData?.jobLink}
+                placeholder="Course Link"
+                defaultValue={singleCourseData?.courseLink}
               />
               {errors.title && (
-                <p className="text-red-500">Job Link is required</p>
+                <p className="text-red-500">Course Link is required</p>
               )}
             </div>
             <div
@@ -404,7 +403,24 @@ const ViewJob = () => {
             <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
               <label className="font-weight-bold">
                 {" "}
-                Job Status <span className="required"> * </span>{" "}
+                Course Price <span className="required"> * </span>{" "}
+              </label>
+              <br />
+              <br />
+              <input
+                className="input input-bordered w-full h-10"
+                type="text"
+                placeholder="Course Link"
+                defaultValue={singleCourseData?.price}
+              />
+              {errors.title && (
+                <p className="text-red-500">Course price is required</p>
+              )}
+            </div>
+            <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
+              <label className="font-weight-bold">
+                {" "}
+                Course Status <span className="required"> * </span>{" "}
               </label>
               <br />
               <br />
@@ -417,23 +433,6 @@ const ViewJob = () => {
                 <option value="NotAvailable">Not Available</option>
               </select>
               {statusError && <p className="text-red-500">{statusError}</p>}
-            </div>
-            <div className="p-3 bg-slate-300 shadow-md shadow-slate-600 rounded-md my-3">
-              <label className="font-weight-bold">
-                {" "}
-                Company Website Link <span className="required"> * </span>{" "}
-              </label>
-              <br />
-              <br />
-              <input
-                className="input input-bordered w-full h-10"
-                type="text"
-                placeholder="Company Website"
-                defaultValue={singleJobData?.companyWebsite}
-              />
-              {errors.title && (
-                <p className="text-red-500">Company website link is required</p>
-              )}
             </div>
           </form>
         </div>
@@ -453,11 +452,11 @@ const ViewJob = () => {
       >
         <p>
           Are you sure you want to delete{" "}
-          <span className="font-bold">{singleJobData?.title}</span>
+          <span className="font-bold">{singleCourseData?.title}</span>
         </p>
       </Modal>
     </div>
   );
 };
 
-export default ViewJob;
+export default ViewCourse;

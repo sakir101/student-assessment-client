@@ -6,9 +6,11 @@ import { UserOutlined } from "@ant-design/icons";
 import { removeUserInfo } from "@/services/auth.service";
 import {
   authKey,
+  createSubField,
   updProfileFaculty,
   updProfileStudent,
   updProfileSuperAdmin,
+  updateSubField,
   userUpdPass,
 } from "@/constant/storageKey";
 import { useRouter } from "next/navigation";
@@ -23,6 +25,8 @@ const Header = () => {
     removeUserInfo(updProfileStudent);
     removeUserInfo(updProfileFaculty);
     removeUserInfo(updProfileSuperAdmin);
+    removeUserInfo(updateSubField);
+    removeUserInfo(createSubField);
     router.push("/login");
   };
   const items: MenuProps["items"] = [

@@ -8,6 +8,7 @@ import Loading from "@/app/loading";
 import Link from "next/link";
 import "react-quill/dist/quill.bubble.css";
 import dynamic from "next/dynamic";
+import "../../../../../../components/QuillCss/page.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
