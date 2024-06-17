@@ -143,6 +143,17 @@ export const sidebarItems = (role: string) => {
           ),
           key: `/${role}/master-field/view`,
         },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/master-field/assign-subField`}
+            >
+              Assign Sub Field
+            </Link>
+          ),
+          key: `/${role}/master-field/assign-subField`,
+        },
       ],
     },
     {

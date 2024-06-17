@@ -52,8 +52,6 @@ const ViewMaterField = () => {
     query["searchTerm"] = debouncedTerm;
   }
 
-  const { userId } = getUserInfo() as any;
-
   const { data, isLoading, refetch } = useGetMasterFieldQuery(query, {
     refetchOnMountOrArgChange: true,
   });
