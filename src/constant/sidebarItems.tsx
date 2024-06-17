@@ -183,6 +183,28 @@ export const sidebarItems = (role: string) => {
           ),
           key: `/${role}/sub-field/view`,
         },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/sub-field/assign-job`}
+            >
+              Assign Job
+            </Link>
+          ),
+          key: `/${role}/sub-field/assign-job`,
+        },
+        {
+          label: (
+            <Link
+              className="hover:text-slate-400"
+              href={`/${role}/sub-field/assign-course`}
+            >
+              Assign Course
+            </Link>
+          ),
+          key: `/${role}/sub-field/assign-course`,
+        },
       ],
     },
     {
