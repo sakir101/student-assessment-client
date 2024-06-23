@@ -27,18 +27,20 @@ export type IInterest = {
     updatedAt: string;
 }
 
-export type IMasterField = {
-    id: string;
-    title: string;
-    category: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
 export type ISubField = {
     id: string;
     title: string;
     desc: string;
+    img: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type IMasterField = {
+    id: string;
+    title: string;
+    category: string;
+    subFields: ISubField[];
     createdAt: string;
     updatedAt: string;
 }
@@ -101,6 +103,9 @@ export type IRelatedWorkFaculty = {
     }[];
 };
 
+export interface IUser {
+    verifiedUser: boolean;
+}
 
 export interface IFaculty {
     id: string;
@@ -113,6 +118,7 @@ export interface IFaculty {
     profileImage: string;
     gender: string;
     userId: string;
+    user: IUser;
     createdAt: string;
     updatedAt: string;
 }
@@ -127,6 +133,7 @@ export interface IStudent {
     gender: string;
     institution: string;
     userId: string;
+    user: IUser;
     createdAt: string;
     updatedAt: string;
 }

@@ -3,18 +3,18 @@
 import Loading from "@/app/loading";
 import SATable from "@/components/ui/Table";
 import {
-  useAssignSubFieldMutation,
-  useGetAssignSubFieldQuery,
-  useGetMasterFieldQuery,
-  useGetSingleMasterFieldQuery,
-  useGetUnassignSubFieldQuery,
-  useUnassignSubFieldMutation,
-} from "@/redux/api/masterFieldApi";
+  useAssignCourseMutation,
+  useGetAssignCourseQuery,
+  useGetSingleSubFieldQuery,
+  useGetSubFieldQuery,
+  useGetUnassignCourseQuery,
+  useUnassignCourseMutation,
+} from "@/redux/api/subFieldApi";
 import { useDebounced } from "@/redux/hooks";
 import { Button, Checkbox, Form, Input, Modal, message } from "antd";
 import React, { useEffect, useState } from "react";
 
-const AssignSubField = () => {
+const AssignCourse = () => {
   const query: Record<string, any> = {};
   const query1: Record<string, any> = {};
 
@@ -24,7 +24,7 @@ const AssignSubField = () => {
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchTerm1, setSearchTerm1] = useState<string>("");
-  const [masterFieldID, setMasterFieldID] = useState<string>("");
+  const [subFieldID, setSubFieldID] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [form] = Form.useForm();
@@ -60,11 +60,11 @@ const AssignSubField = () => {
     query1["searchTerm"] = debouncedTerm1;
   }
 
-  const { data, isLoading, refetch } = useGetMasterFieldQuery(query, {
+  const { data, isLoading, refetch } = useGetSubFieldQuery(query, {
     refetchOnMountOrArgChange: true,
   });
 
-  const masterFieldList = data?.masterField;
+  const subFieldList = data?.subField;
   const meta = data?.meta;
 
   useEffect(() => {
@@ -72,52 +72,49 @@ const AssignSubField = () => {
     setPage(meta?.page);
   }, [meta]);
 
-  const { data: singleMasterFieldData } = useGetSingleMasterFieldQuery(
-    masterFieldID,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const { data: singleSubFieldData } = useGetSingleSubFieldQuery(subFieldID, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const {
-    data: unassignSubFieldData,
+    data: unassignCourseData,
     isLoading: loading,
     refetch: refetch1,
-  } = useGetUnassignSubFieldQuery(
-    { id: masterFieldID, arg: query1 },
+  } = useGetUnassignCourseQuery(
+    { id: subFieldID, arg: query1 },
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  const unassignSubFieldList = unassignSubFieldData?.subField;
+  const unassignCourseList = unassignCourseData?.course;
 
-  const newUnassignSubField = unassignSubFieldList?.map((subFieldItem) => ({
-    id: subFieldItem.id ?? "",
-    title: subFieldItem.title ?? "",
+  const newUnassignCourse = unassignCourseList?.map((courseItem) => ({
+    id: courseItem.id ?? "",
+    title: courseItem.title ?? "",
   }));
 
   const {
-    data: assignSubFieldData,
+    data: assignCourseData,
     isLoading: loading1,
     refetch: refetch2,
-  } = useGetAssignSubFieldQuery(
-    { id: masterFieldID, arg: query1 },
+  } = useGetAssignCourseQuery(
+    { id: subFieldID, arg: query1 },
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  const assignSubFieldList = assignSubFieldData?.subField;
+  const assignCourseList = assignCourseData?.course;
 
-  const newAssignSubField = assignSubFieldList?.map((subFieldItem) => ({
-    id: subFieldItem.id ?? "",
-    title: subFieldItem.title ?? "",
+  const newAssignCourse = assignCourseList?.map((courseItem) => ({
+    id: courseItem.id ?? "",
+    title: courseItem.title ?? "",
   }));
 
-  const [assignSubField] = useAssignSubFieldMutation();
-  const [unassignSubField] = useUnassignSubFieldMutation();
+  const [assignCourse] = useAssignCourseMutation();
+  const [unassignCourse] = useUnassignCourseMutation();
 
   const showModal = (id: string) => {
-    setMasterFieldID(id);
+    setSubFieldID(id);
     setIsModalOpen(true);
   };
 
@@ -131,15 +128,15 @@ const AssignSubField = () => {
           .filter((key) => values[key])
           .map((key) => key);
 
-        const data = { subField: checkedIds };
-        assignSubField({ data, id: masterFieldID })
+        const data = { course: checkedIds };
+        assignCourse({ data, id: subFieldID })
           .unwrap()
           .then(() => {
-            message.success("Sub field assigned successfully");
+            message.success("Course assigned successfully");
             refetch1();
           })
           .catch((err) => {
-            message.error("Failed to assign sub field");
+            message.error("Failed to assign course");
           })
           .finally(() => {
             message.destroy(key);
@@ -147,7 +144,7 @@ const AssignSubField = () => {
         form.resetFields();
         setSearchTerm1("");
         setIsModalOpen(false);
-        setMasterFieldID("");
+        setSubFieldID("");
       })
       .catch((errorInfo: any) => {
         console.log("Validation failed:", errorInfo);
@@ -155,14 +152,14 @@ const AssignSubField = () => {
   };
 
   const handleCancel = () => {
-    setMasterFieldID("");
+    setSubFieldID("");
     setIsModalOpen(false);
     setSearchTerm1("");
   };
 
   const showModal1 = (id: string) => {
     refetch1();
-    setMasterFieldID(id);
+    setSubFieldID(id);
     setIsModalOpen1(true);
   };
 
@@ -176,15 +173,15 @@ const AssignSubField = () => {
           .filter((key) => values[key])
           .map((key) => key);
 
-        const data = { subField: checkedIds };
-        unassignSubField({ data, id: masterFieldID })
+        const data = { course: checkedIds };
+        unassignCourse({ data, id: subFieldID })
           .unwrap()
           .then(() => {
-            message.success("Sub field unassigned successfully");
+            message.success("Course unassigned successfully");
             refetch2();
           })
           .catch((err) => {
-            message.error("Failed to unassign sub field");
+            message.error("Failed to unassign course");
           })
           .finally(() => {
             message.destroy(key);
@@ -192,7 +189,7 @@ const AssignSubField = () => {
         form.resetFields();
         setSearchTerm1("");
         setIsModalOpen1(false);
-        setMasterFieldID("");
+        setSubFieldID("");
       })
       .catch((errorInfo: any) => {
         console.log("Validation failed:", errorInfo);
@@ -200,7 +197,7 @@ const AssignSubField = () => {
   };
 
   const handleCancel1 = () => {
-    setMasterFieldID("");
+    setSubFieldID("");
     refetch1();
     setIsModalOpen1(false);
     setSearchTerm1("");
@@ -211,11 +208,6 @@ const AssignSubField = () => {
       dataIndex: "title",
       key: "title",
       sorter: true,
-    },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
     },
     {
       title: "Action",
@@ -255,7 +247,7 @@ const AssignSubField = () => {
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Master Field List
+        Assign Course
       </h1>
 
       <div className="flex justify-center items-center mt-5 lg:mt-7">
@@ -286,7 +278,7 @@ const AssignSubField = () => {
           <SATable
             loading={isLoading}
             columns={columns}
-            dataSource={masterFieldList}
+            dataSource={subFieldList}
             pageSize={size}
             totalPages={meta?.total}
             showSizeChanger={true}
@@ -298,7 +290,7 @@ const AssignSubField = () => {
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-col justify-center items-center my-14 w-full lg:w-1/2">
               <p className="text-center text-red-700 font-bold text-lg">
-                No master field is created
+                No sub field is created
               </p>
             </div>
           </div>
@@ -311,14 +303,14 @@ const AssignSubField = () => {
         onCancel={handleCancel}
       >
         <h1 className="text-center font-bold text-blue-400 text-lg">
-          {singleMasterFieldData?.title}
+          {singleSubFieldData?.title}
         </h1>
         <div className="flex justify-center items-center mt-5 lg:mt-7">
           {loading ? (
             <Loading />
           ) : (
             <>
-              {Object.keys(unassignSubFieldData || {}).length > 0 && (
+              {Object.keys(unassignCourseData || {}).length > 0 && (
                 <>
                   <Input
                     type="text"
@@ -335,7 +327,7 @@ const AssignSubField = () => {
           )}
         </div>
         <Form form={form} layout="vertical">
-          {newUnassignSubField?.map((item: any) => (
+          {newUnassignCourse?.map((item: any) => (
             <Form.Item key={item.id} name={item.id} valuePropName="checked">
               <Checkbox>
                 <div style={{ display: "flex", alignItems: "center" }}>
@@ -353,14 +345,14 @@ const AssignSubField = () => {
         onCancel={handleCancel1}
       >
         <h1 className="text-center font-bold text-blue-400 text-lg">
-          {singleMasterFieldData?.title}
+          {singleSubFieldData?.title}
         </h1>
         <div className="flex justify-center items-center mt-5 lg:mt-7">
           {loading1 ? (
             <Loading />
           ) : (
             <>
-              {Object.keys(assignSubFieldData || {}).length > 0 && (
+              {Object.keys(assignCourseData || {}).length > 0 && (
                 <>
                   <Input
                     type="text"
@@ -377,7 +369,7 @@ const AssignSubField = () => {
           )}
         </div>
         <Form form={form} layout="vertical">
-          {newAssignSubField?.map((item: any) => (
+          {newAssignCourse?.map((item: any) => (
             <Form.Item key={item.id} name={item.id} valuePropName="checked">
               <Checkbox>
                 <div style={{ display: "flex", alignItems: "center" }}>
@@ -392,4 +384,4 @@ const AssignSubField = () => {
   );
 };
 
-export default AssignSubField;
+export default AssignCourse;

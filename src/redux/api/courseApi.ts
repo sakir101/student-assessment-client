@@ -40,6 +40,21 @@ export const courseApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.course],
         }),
 
+        getCreatedCourseForSubField: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Course_URL}/${id}/getSpecificCourse`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: ICourse[], meta: IMeta) => {
+                return {
+                    course: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.job],
+        }),
+
         updateCourse: build.mutation({
             query: ({ data, id }: { data: any; id: string }) => ({
                 url: `${Course_URL}/${id}/update-course`,
@@ -65,5 +80,6 @@ export const {
     useGetSingleCourseQuery,
     useCourseCreateMutation,
     useUpdateCourseMutation,
-    useDeleteCourseMutation
+    useDeleteCourseMutation,
+    useGetCreatedCourseForSubFieldQuery
 } = courseApi

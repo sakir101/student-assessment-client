@@ -26,6 +26,9 @@ const RelatedWorksCreate = () => {
   const [isErrorOption, setErrorOption] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { userId } = getUserInfo() as any;
+  const [size, setSize] = useState<number>(100);
+
+  query["size"] = size;
 
   query["searchTerm"] = searchTerm;
 

@@ -1,16 +1,12 @@
 "use client";
 
 import Loading from "@/app/loading";
-import {
-  useGetSingleAdminByAdminIdQuery,
-  useGetSingleAdminQuery,
-} from "@/redux/api/adminApi";
-import { getUserInfo } from "@/services/auth.service";
+import { useGetSingleStudentByStudentIdQuery } from "@/redux/api/studentApi";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const AdminProfile = () => {
+const StudentProfile = () => {
   const [id, setId] = useState<string>("");
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -24,7 +20,7 @@ const AdminProfile = () => {
     }
   }, [pathname, searchParams]);
 
-  const { data, isLoading, refetch } = useGetSingleAdminByAdminIdQuery(
+  const { data, isLoading, refetch } = useGetSingleStudentByStudentIdQuery(
     id,
 
     { refetchOnMountOrArgChange: true }
@@ -62,31 +58,27 @@ const AdminProfile = () => {
               <div className="mt-5 grid grid-cols-2 justify-items-center items-center mx-auto ">
                 <div>
                   <p className="mb-5">
-                    <span className="text-lg text-gray-600 ">
-                      Super Admin ID
-                    </span>
+                    <span className="text-lg text-gray-600 ">Student ID</span>
                   </p>
                   <p className="mb-5">
-                    <span className="text-lg text-gray-600 ">
-                      Contact Number
-                    </span>
+                    <span className="text-lg text-gray-600 ">Institute</span>
                   </p>
                   <p className="mb-5">
                     <span className="text-lg text-gray-600 ">Email</span>
                   </p>
                   <p className="mb-5">
-                    <span className="text-lg text-gray-600 ">Address</span>
+                    <span className="text-lg text-gray-600 ">Gender</span>
                   </p>
                 </div>
                 <div>
                   <p className="mb-5">
                     <span className="text-lg font-semibold">
-                      {data?.adminId}
+                      {data?.studentId}
                     </span>
                   </p>
                   <p className="mb-5">
                     <span className="text-lg font-semibold">
-                      {data?.contactNum}
+                      {data?.institution}
                     </span>
                   </p>
                   <p className="mb-5">
@@ -96,7 +88,7 @@ const AdminProfile = () => {
                   </p>
                   <p className="mb-5">
                     <span className="text-lg font-semibold">
-                      {data?.address}
+                      {data?.gender}
                     </span>
                   </p>
                 </div>
@@ -109,4 +101,4 @@ const AdminProfile = () => {
   );
 };
 
-export default AdminProfile;
+export default StudentProfile;

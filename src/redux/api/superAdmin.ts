@@ -1,4 +1,4 @@
-import { IAdmin, IMeta } from "@/types";
+import { IAdmin, IFaculty, IMeta, IStudent } from "@/types";
 import { tagTypes } from "../tag-types"
 import { baseApi } from "./baseApi"
 
@@ -34,6 +34,15 @@ export const superAdminApi = baseApi.injectEndpoints({
             invalidatesTags: [tagTypes.superAdmin],
         }),
 
+        updateUserVerification: build.mutation({
+            query: ({ data, id }: { data: any; id: string }) => ({
+                url: `/user/${id}/update-user`,
+                method: 'PATCH',
+                data
+            }),
+            invalidatesTags: [tagTypes.superAdmin],
+        }),
+
         createAdmin: build.mutation({
             query: (data) => ({
                 url: '/user/create-admin',
@@ -61,6 +70,40 @@ export const superAdminApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.superAdmin]
         }),
 
+        getAllFaculties: build.query({
+            query: (arg: Record<string, any>) => {
+                return {
+                    url: `${SuperAdmin_URL}/get-faculties`,
+                    method: "GET",
+                    params: arg,
+                };
+            },
+            transformResponse: (response: IFaculty[], meta: IMeta) => {
+                return {
+                    faculty: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.superAdmin]
+        }),
+
+        getAllStudents: build.query({
+            query: (arg: Record<string, any>) => {
+                return {
+                    url: `${SuperAdmin_URL}/get-students`,
+                    method: "GET",
+                    params: arg,
+                };
+            },
+            transformResponse: (response: IStudent[], meta: IMeta) => {
+                return {
+                    student: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.superAdmin]
+        }),
+
     })
 
 })
@@ -70,5 +113,8 @@ export const {
     useGetSingleSuperAdminBySuperAdminIdQuery,
     useUpdateSuperAdminProfileMutation,
     useCreateAdminMutation,
-    useGetAllAdminsQuery
+    useGetAllAdminsQuery,
+    useGetAllFacultiesQuery,
+    useGetAllStudentsQuery,
+    useUpdateUserVerificationMutation
 } = superAdminApi

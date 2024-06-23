@@ -1,26 +1,18 @@
 "use client";
 
-import {
-  useGetMasterFieldQuery,
-  useGetSingleMasterFieldQuery,
-  useUpdateMasterFieldMutation,
-} from "@/redux/api/masterFieldApi";
-import { useDebounced } from "@/redux/hooks";
-import { getUserInfo } from "@/services/auth.service";
-import { Button, Input, Modal, message } from "antd";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { EditOutlined } from "@ant-design/icons";
 import Loading from "@/app/loading";
 import SATable from "@/components/ui/Table";
+import {
+  useGetAllStudentsQuery,
+  useUpdateUserVerificationMutation,
+} from "@/redux/api/superAdmin";
+import { useDebounced } from "@/redux/hooks";
+import { Button, Input, Switch, message, Modal } from "antd";
+import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const ViewMaterField = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const ManageStudents = () => {
   const query: Record<string, any> = {};
 
   const [page, setPage] = useState<number>();
@@ -28,8 +20,6 @@ const ViewMaterField = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [masterFieldID, setMasterFieldID] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   query["size"] = size;
   query["page"] = page;
@@ -52,11 +42,25 @@ const ViewMaterField = () => {
     query["searchTerm"] = debouncedTerm;
   }
 
-  const { data, isLoading, refetch } = useGetMasterFieldQuery(query, {
+  const { data, isLoading, refetch } = useGetAllStudentsQuery(query, {
     refetchOnMountOrArgChange: true,
   });
 
-  const masterFieldList = data?.masterField;
+  const [updateUserVerification] = useUpdateUserVerificationMutation();
+
+  const studentList = data?.student;
+
+  const newData = studentList?.map((studentItem) => ({
+    id: studentItem.id ?? "",
+    userId: studentItem.userId ?? "",
+    verifiedUser: studentItem.user.verifiedUser ?? "",
+    name: `${studentItem.firstName ?? ""} ${studentItem.middleName ?? ""} ${
+      studentItem.lastName ?? ""
+    }`,
+    studentId: studentItem.studentId ?? "",
+    profileimg: studentItem.profileImage ?? "",
+  }));
+
   const meta = data?.meta;
 
   useEffect(() => {
@@ -64,63 +68,84 @@ const ViewMaterField = () => {
     setPage(meta?.page);
   }, [meta]);
 
-  const { data: singleMasterFieldData } = useGetSingleMasterFieldQuery(
-    masterFieldID,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
-
-  const [updateMasterField] = useUpdateMasterFieldMutation();
-
-  const showModal = (id: string) => {
-    setMasterFieldID(id);
-    setIsModalOpen(true);
+  const handleVerifiedChange = (userId: string, checked: boolean) => {
+    Modal.confirm({
+      title: "Change Verified Status",
+      content: `Are you sure you want to ${
+        checked ? "verify" : "unverify"
+      } this user?`,
+      onOk: () => {
+        updateUser(userId, checked);
+      },
+      onCancel: () => {
+        console.log(`Change of verified status for ${userId} cancelled`);
+      },
+    });
   };
 
-  const onSubmit = async (data: any) => {
+  const updateUser = async (userId: string, checked: boolean) => {
     const key = "loadingKey";
     message.loading({ content: "Loading...", key });
+
+    const data = {
+      verifiedUser: checked,
+    };
+
     try {
-      await updateMasterField({ data, id: masterFieldID });
+      await updateUserVerification({ data, id: userId });
       refetch();
-      setIsModalOpen(false);
       message.destroy(key);
-      message.success("Master field updated successfully");
+      message.success("User verification updated successfully");
     } catch (err: any) {
-      setIsModalOpen(false);
       message.destroy(key);
-      message.error("Master field update failed");
+      message.error("User verification updated failed");
     }
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
   const columns = [
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      sorter: true,
+      title: "Profile Image",
+      dataIndex: "profileimg",
+      key: "profileimg",
+      render: (profileimg: string) => (
+        <Image
+          src={profileimg}
+          width={70}
+          height={70}
+          alt="Profile"
+          style={{ borderRadius: "50%" }}
+        />
+      ),
     },
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Action",
+      title: "ID",
+      dataIndex: "studentId",
+      key: "studentId",
+    },
+    {
+      title: "Verified User",
+      dataIndex: "verifiedUser",
+      key: "verifiedUser",
+      render: (verifiedUser: boolean, record: any) => (
+        <Switch
+          checked={verifiedUser}
+          onChange={(checked) => handleVerifiedChange(record.userId, checked)}
+        />
+      ),
+    },
+    {
+      title: "Account View",
       render: function (data: any) {
         return (
           <>
-            <Button
-              type="primary"
-              onClick={() => showModal(data?.id)}
-              className="ms-3"
-            >
-              <EditOutlined />
-            </Button>
+            <Link href={`/super_admin/manage-students/${data.id}`}>
+              <Button type="primary">View</Button>
+            </Link>
           </>
         );
       },
@@ -140,7 +165,7 @@ const ViewMaterField = () => {
   return (
     <div className="p-4">
       <h1 className="text-center text-xl text-blue-500 font-semibold">
-        Interest List
+        Student List
       </h1>
 
       <div className="flex justify-center items-center mt-5 lg:mt-7">
@@ -171,7 +196,7 @@ const ViewMaterField = () => {
           <SATable
             loading={isLoading}
             columns={columns}
-            dataSource={masterFieldList}
+            dataSource={newData}
             pageSize={size}
             totalPages={meta?.total}
             showSizeChanger={true}
@@ -183,47 +208,14 @@ const ViewMaterField = () => {
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-col justify-center items-center my-14 w-full lg:w-1/2">
               <p className="text-center text-red-700 font-bold text-lg">
-                No master field is created
+                No student is signed up
               </p>
             </div>
           </div>
         )}
       </div>
-      <Modal
-        visible={isModalOpen}
-        okText="Update"
-        onOk={handleSubmit(onSubmit)}
-        onCancel={handleCancel}
-        okButtonProps={{ style: { background: "blue" } }}
-      >
-        <div className="my-5">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="my-3">
-              <label className="font-weight-bold">Title</label>
-              <br />
-              <input
-                className="input input-bordered w-full h-10"
-                type="text"
-                {...register("title")}
-                placeholder="Title"
-                defaultValue={singleMasterFieldData?.title}
-              />
-            </div>
-            <div className="my-3">
-              <label className="font-weight-bold">Category</label>
-              <br />
-              <input
-                className="input input-bordered w-full h-10"
-                type="text"
-                defaultValue={singleMasterFieldData?.category}
-                disabled
-              />
-            </div>
-          </form>
-        </div>
-      </Modal>
     </div>
   );
 };
 
-export default ViewMaterField;
+export default ManageStudents;

@@ -40,6 +40,21 @@ export const jobApi = baseApi.injectEndpoints({
             providesTags: [tagTypes.job],
         }),
 
+        getCreatedJobForSubField: build.query({
+            query: ({ id, arg }: { id: any, arg: Record<string, any> }) => ({
+                url: `${Job_URL}/${id}/getSpecificJob`,
+                method: "GET",
+                params: arg
+            }),
+            transformResponse: (response: IJob[], meta: IMeta) => {
+                return {
+                    job: response,
+                    meta,
+                };
+            },
+            providesTags: [tagTypes.job],
+        }),
+
         updateJob: build.mutation({
             query: ({ data, id }: { data: any; id: string }) => ({
                 url: `${Job_URL}/${id}/update-job`,
@@ -65,5 +80,6 @@ export const {
     useGetSingleJobQuery,
     useJobCreateMutation,
     useUpdateJobMutation,
-    useDeleteJobMutation
+    useDeleteJobMutation,
+    useGetCreatedJobForSubFieldQuery
 } = jobApi
