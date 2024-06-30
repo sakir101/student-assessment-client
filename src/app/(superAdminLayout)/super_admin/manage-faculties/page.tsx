@@ -143,7 +143,7 @@ const ManageFaculties = () => {
       render: function (data: any) {
         return (
           <>
-            <Link href={`/super_faculty/manage-faculty/${data.id}`}>
+            <Link href={`/super_admin/manage-faculties/${data.id}`}>
               <Button type="primary">View</Button>
             </Link>
           </>
