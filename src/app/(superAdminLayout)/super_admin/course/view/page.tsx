@@ -26,11 +26,13 @@ import { formats, modules } from "@/components/ui/QuillModuleFormat";
 import "../../../../../components/QuillCss/page.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
 const ViewCourse = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
   const query: Record<string, any> = {};
   const [error, setError] = useState<string>("");
@@ -80,6 +82,7 @@ const ViewCourse = () => {
   if (!!debouncedTerm) {
     query["searchTerm"] = debouncedTerm;
   }
+
   const handleChangeCreatedAt = (value: string) => {
     setPage(1);
     setCreatedAt(value);
@@ -110,9 +113,15 @@ const ViewCourse = () => {
   );
 
   useEffect(() => {
-    setDescription(singleCourseData?.desc);
-    setStatusChange(singleCourseData?.status);
-  }, [singleCourseData]);
+    if (singleCourseData) {
+      setDescription(singleCourseData?.desc);
+      setStatusChange(singleCourseData?.status);
+      setValue("title", singleCourseData?.title);
+      setValue("courseLink", singleCourseData?.courseLink);
+      setValue("price", singleCourseData?.price);
+    }
+  }, [singleCourseData, setValue]);
+
   const [updateCourse] = useUpdateCourseMutation();
   const [deleteCourse] = useDeleteCourseMutation();
 
@@ -140,7 +149,7 @@ const ViewCourse = () => {
       price: value.price,
       status: statusChange,
     };
-
+    console.log(data);
     setError("");
     setStatusError("");
 
@@ -358,7 +367,7 @@ const ViewCourse = () => {
                 className="input input-bordered w-full h-10"
                 type="text"
                 placeholder="Title"
-                defaultValue={singleCourseData?.title}
+                {...register("title", { required: true })}
               />
               {errors.title && (
                 <p className="text-red-500">Title is required</p>
@@ -375,9 +384,9 @@ const ViewCourse = () => {
                 className="input input-bordered w-full h-10"
                 type="text"
                 placeholder="Course Link"
-                defaultValue={singleCourseData?.courseLink}
+                {...register("courseLink", { required: true })}
               />
-              {errors.title && (
+              {errors.courseLink && (
                 <p className="text-red-500">Course Link is required</p>
               )}
             </div>
@@ -410,10 +419,10 @@ const ViewCourse = () => {
               <input
                 className="input input-bordered w-full h-10"
                 type="text"
-                placeholder="Course Link"
-                defaultValue={singleCourseData?.price}
+                placeholder="Course Price"
+                {...register("price", { required: true })}
               />
-              {errors.title && (
+              {errors.price && (
                 <p className="text-red-500">Course price is required</p>
               )}
             </div>
@@ -426,9 +435,10 @@ const ViewCourse = () => {
               <br />
               <select
                 className="select select-secondary w-full h-9 min-h-9"
+                value={statusChange}
                 onChange={handleChangeStatus}
               >
-                <option selected>{statusChange}</option>
+                <option value="">Select Status</option>
                 <option value="Available">Available</option>
                 <option value="NotAvailable">Not Available</option>
               </select>

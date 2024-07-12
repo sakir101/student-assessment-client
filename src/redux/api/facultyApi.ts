@@ -7,7 +7,7 @@ const Faculty_URL = "/faculties"
 export const facultyApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         signUpFaculty: build.mutation({
-            query: ({ data }) => ({
+            query: (data) => ({
                 url: '/user/create-faculty',
                 method: "POST",
                 data,

@@ -32,6 +32,7 @@ const ViewJob = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
   const query: Record<string, any> = {};
   const [error, setError] = useState<string>("");
@@ -103,17 +104,19 @@ const ViewJob = () => {
     setPage(meta?.page);
   }, [meta]);
 
-  const { data: singleJobData, refetch: refetch1 } = useGetSingleJobQuery(
-    jobID,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  let { data: singleJobData, refetch: refetch1 } = useGetSingleJobQuery(jobID, {
+    refetchOnMountOrArgChange: true,
+  });
 
   useEffect(() => {
-    setDescription(singleJobData?.desc);
-    setStatusChange(singleJobData?.status);
-  }, [singleJobData]);
+    if (singleJobData) {
+      setValue("title", singleJobData?.title);
+      setValue("jobLink", singleJobData?.jobLink);
+      setValue("companyWebsite", singleJobData?.companyWebsite);
+      setDescription(singleJobData?.desc);
+      setStatusChange(singleJobData?.status);
+    }
+  }, [singleJobData, setValue]);
   const [updateJob] = useUpdateJobMutation();
   const [deleteJob] = useDeleteJobMutation();
 
@@ -141,13 +144,15 @@ const ViewJob = () => {
       status: statusChange,
       companyWebsite: value.companyWebsite,
     };
-
+    console.log(data);
     setError("");
     setStatusError("");
 
     try {
       await updateJob({ data, id: jobID });
       refetch();
+      refetch1();
+      singleJobData = {};
       setIsModalOpen(false);
       message.destroy(key);
       setJobID("");
@@ -162,11 +167,13 @@ const ViewJob = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    singleJobData = {};
     setJobID("");
   };
 
   const showModal1 = async (id: string) => {
     setIsModalOpen1(true);
+    singleJobData = {};
     setJobID(id);
   };
 
@@ -359,7 +366,7 @@ const ViewJob = () => {
                 className="input input-bordered w-full h-10"
                 type="text"
                 placeholder="Title"
-                defaultValue={singleJobData?.title}
+                {...register("title", { required: true })}
               />
               {errors.title && (
                 <p className="text-red-500">Title is required</p>
@@ -376,7 +383,7 @@ const ViewJob = () => {
                 className="input input-bordered w-full h-10"
                 type="text"
                 placeholder="Job Link"
-                defaultValue={singleJobData?.jobLink}
+                {...register("jobLink", { required: true })}
               />
               {errors.title && (
                 <p className="text-red-500">Job Link is required</p>
@@ -429,7 +436,7 @@ const ViewJob = () => {
                 className="input input-bordered w-full h-10"
                 type="text"
                 placeholder="Company Website"
-                defaultValue={singleJobData?.companyWebsite}
+                {...register("companyWebsite", { required: true })}
               />
               {errors.title && (
                 <p className="text-red-500">Company website link is required</p>

@@ -23,7 +23,10 @@ const RelatedWorkCreateFaculty = () => {
   const [isError, setError] = useState<string>("");
   const [isErrorOption, setErrorOption] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [size, setSize] = useState<number>(100);
+
   query["searchTerm"] = searchTerm;
+  query["size"] = size;
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,

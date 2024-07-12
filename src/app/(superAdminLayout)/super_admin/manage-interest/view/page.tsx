@@ -19,6 +19,7 @@ const InterestView = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
   const query: Record<string, any> = {};
 
@@ -69,6 +70,11 @@ const InterestView = () => {
     refetchOnMountOrArgChange: true,
   });
 
+  useEffect(() => {
+    if (singleInterestData) {
+      setValue("title", singleInterestData?.title);
+    }
+  });
   const [updateInterest] = useUpdateInterestMutation();
 
   const showModal = (id: string) => {
@@ -84,16 +90,19 @@ const InterestView = () => {
       refetch();
       setIsModalOpen(false);
       message.destroy(key);
+      setInterestID("");
       message.success("Interest updated successfully");
     } catch (err: any) {
       setIsModalOpen(false);
       message.destroy(key);
+      setInterestID("");
       message.error("Interest update failed");
     }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setInterestID("");
   };
   const columns = [
     {
@@ -199,7 +208,6 @@ const InterestView = () => {
                 type="text"
                 {...register("title")}
                 placeholder="Title"
-                defaultValue={singleInterestData?.title}
               />
             </div>
           </form>
